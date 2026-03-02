@@ -3,12 +3,6 @@
     // The immediate dark mode enforcement is handled below.
 })();
 
-// The toggleTheme function is no longer needed as toggle capabilities are removed.
-// function toggleTheme() {
-//     const isLight = document.documentElement.classList.toggle('light');
-//     localStorage.setItem('theme', isLight ? 'light' : 'dark');
-// }
-
 // Alpine.js integration
 document.addEventListener('alpine:init', () => {
     Alpine.store('theme', {
