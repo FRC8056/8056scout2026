@@ -48,11 +48,36 @@
             Scout</button>
     </div>
 
-    <!-- Search -->
-    <div class="filter-panel pt-4">
-        <div class="filter-group w-full">
-            <label class="form-label--filter text-orange-500 font-black">Find Official Tournament Teams</label>
+    <!-- Enhanced Filters -->
+    <div class="filter-panel">
+        <div class="filter-group">
+            <label class="form-label--filter">Search Team</label>
             <input x-model="searchQuery" type="text" placeholder="Team # or Name..." class="form-input--search">
+        </div>
+
+        <div class="filter-group">
+            <label class="form-label--filter">Seasons</label>
+            <div class="filter-chips">
+                <template x-for="year in availableSeasons">
+                    <button
+                        @click="selectedSeasons.includes(year) ? selectedSeasons = selectedSeasons.filter(y => y !== year) : selectedSeasons.push(year)"
+                        :class="selectedSeasons.includes(year) ? 'filter-chip--active' : 'filter-chip--inactive'"
+                        class="filter-chip" x-text="year"></button>
+                </template>
+            </div>
+        </div>
+
+        <div class="filter-group">
+            <label class="form-label--filter">Regionals</label>
+            <div class="filter-regional-list">
+                <template x-for="event in availableEvents.filter(e => selectedSeasons.includes(e.season))"
+                    :key="event.key">
+                    <button
+                        @click="selectedEvents.includes(event.key) ? selectedEvents = selectedEvents.filter(k => k !== event.key) : selectedEvents.push(event.key)"
+                        :class="selectedEvents.includes(event.key) ? 'filter-regional-btn--active' : 'filter-regional-btn--inactive'"
+                        class="filter-regional-btn" x-text="event.name"></button>
+                </template>
+            </div>
         </div>
     </div>
 

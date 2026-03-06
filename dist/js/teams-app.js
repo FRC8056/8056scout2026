@@ -5,6 +5,10 @@ document.addEventListener('alpine:init', () => {
         expandedTeams: [],
         expandedHistory: [],
         expandedPitReports: [],
+        availableSeasons: FRC_CONFIG.seasons,
+        availableEvents: FRC_CONFIG.events,
+        selectedSeasons: [...FRC_CONFIG.seasons],
+        selectedEvents: FRC_CONFIG.events.map(e => e.key),
         searchQuery: '',
         loading: true,
 
@@ -42,7 +46,19 @@ document.addEventListener('alpine:init', () => {
                 const teamMap = new Map();
                 for (const event of turkishEvents) {
                     const eventTeams = await this.fetchEventTeams(event.key);
-                    eventTeams.forEach(t => teamMap.set(t.team_number, t));
+                    eventTeams.forEach(t => {
+                        if (!teamMap.has(t.team_number)) {
+                            teamMap.set(t.team_number, {
+                                ...t,
+                                eventKeys: [event.key]
+                            });
+                        } else {
+                            const existing = teamMap.get(t.team_number);
+                            if (!existing.eventKeys.includes(event.key)) {
+                                existing.eventKeys.push(event.key);
+                            }
+                        }
+                    });
                 }
 
                 this.teams = Array.from(teamMap.values()).map(t => ({
@@ -51,7 +67,8 @@ document.addEventListener('alpine:init', () => {
                     city: t.city || 'Unknown',
                     country: t.country || 'Turkey',
                     awards: [],
-                    events: []
+                    events: [],
+                    eventKeys: t.eventKeys || []
                 })).sort((a, b) => a.teamNumber - b.teamNumber);
 
                 // 2. Fetch Pit Reports from Firestore
@@ -183,12 +200,25 @@ document.addEventListener('alpine:init', () => {
         },
 
         get filteredTeams() {
-            if (!this.searchQuery) return this.teams;
-            const q = this.searchQuery.toLowerCase();
-            return this.teams.filter(t =>
-                t.teamNumber.toString().includes(q) ||
-                t.name.toLowerCase().includes(q)
-            );
+            let list = this.teams;
+
+            // 1. Regional / Event Filter
+            if (this.selectedEvents.length > 0) {
+                list = list.filter(t =>
+                    t.eventKeys?.some(key => this.selectedEvents.includes(key))
+                );
+            }
+
+            // 2. Search Query Filter
+            if (this.searchQuery) {
+                const q = this.searchQuery.toLowerCase();
+                list = list.filter(t =>
+                    t.teamNumber.toString().includes(q) ||
+                    t.name.toLowerCase().includes(q)
+                );
+            }
+
+            return list;
         },
 
         isVerified(role) {
