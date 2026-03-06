@@ -41,7 +41,9 @@ const FRC_CONFIG = {
             endgameLevel3: 30
         }
     },
-    manualTeamsPath: "data/teams-manual.json"
+    manualTeamsPath: "data/teams-manual.json",
+    // Auto-detected domain: identifies which deployment is active
+    currentDomain: window.location.hostname
 };
 
 /* Fetches match results from The Blue Alliance API */

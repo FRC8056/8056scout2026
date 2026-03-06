@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -281,6 +281,10 @@
                                                     <span
                                                         class="text-[10px] font-black text-slate-300 truncate max-w-[80px]"
                                                         x-text="getTeamData(entry.teamNumber).nickname || ''"></span>
+                                                    <template x-if="entry.meta?.isTestData">
+                                                        <span
+                                                            class="text-[9px] font-black px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 uppercase tracking-widest">TEST</span>
+                                                    </template>
                                                 </div>
                                                 <div class="scout-report__scouter-inline">
                                                     <span class="scout-report__scouter-team-text"

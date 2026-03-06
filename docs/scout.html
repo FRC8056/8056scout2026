@@ -103,6 +103,20 @@
               Alliance</button>
           </div>
         </div>
+
+        <!-- Test Data Toggle -->
+        <div class="flex items-start gap-3 p-3 rounded-lg border"
+          :class="isTestData ? 'border-yellow-500/50 bg-yellow-500/5' : 'border-slate-700/50'">
+          <div class="flex items-center h-5 mt-0.5">
+            <input id="testDataCheckbox" type="checkbox" x-model="isTestData"
+              class="w-4 h-4 accent-yellow-400 cursor-pointer">
+          </div>
+          <label for="testDataCheckbox" class="cursor-pointer">
+            <span class="text-sm font-bold" :class="isTestData ? 'text-yellow-400' : 'text-slate-300'">Test Data</span>
+            <p class="text-[10px] text-slate-500 mt-0.5 leading-tight">Check this box if this submission is for testing
+              purposes only. It will be visually marked as TEST in all reports.</p>
+          </label>
+        </div>
       </div>
     </section>
 

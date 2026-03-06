@@ -32,6 +32,7 @@ document.addEventListener('alpine:init', () => {
         teleopShiftB: '0-5',
         endgame: { level: 'none', climbTime: null },
         ratings: { driver: 3, speed: 3, defense: 3, stability: 3, comments: '' },
+        isTestData: false,
         loading: false,
 
         // Timer State
@@ -104,7 +105,9 @@ document.addEventListener('alpine:init', () => {
                         scouterUID: auth.currentUser?.uid,
                         scouterTeam: scouterTeam,
                         scouterRole: scouterRole,
-                        isVerified: scouterRole !== 'new'
+                        isVerified: scouterRole !== 'new',
+                        isTestData: this.isTestData,
+                        domain: FRC_CONFIG.currentDomain
                     },
                     data: {
                         auto: { ...this.auto },
