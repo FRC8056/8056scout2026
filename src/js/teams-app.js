@@ -22,29 +22,15 @@ document.addEventListener('alpine:init', () => {
 
             this.loading = true;
             try {
-                // 1. Discover all Turkish events from recent years
-                const years = [2024, 2025, 2026];
-                const turkishEvents = [];
+                // 1. Get events from config
+                const filteredEvents = FRC_CONFIG.events.filter(e =>
+                    this.selectedSeasons.includes(e.season) &&
+                    this.selectedEvents.includes(e.key)
+                );
 
-                for (const year of years) {
-                    const eventsUrl = `https://www.thebluealliance.com/api/v3/events/${year}`;
-                    const res = await fetch(eventsUrl, { headers: { "X-TBA-Auth-Key": FRC_CONFIG.apiKey } });
-                    if (res.ok) {
-                        const allEvents = await res.json();
-                        const yearEvents = allEvents.filter(e =>
-                            e.country === "Turkey" ||
-                            e.country === "Türkiye" ||
-                            e.city?.includes("Istanbul") ||
-                            e.city?.includes("Ankara") ||
-                            e.city?.includes("Izmir")
-                        );
-                        turkishEvents.push(...yearEvents);
-                    }
-                }
-
-                // 2. Fetch teams from all discovered events
+                // 2. Fetch teams from selected events
                 const teamMap = new Map();
-                for (const event of turkishEvents) {
+                for (const event of filteredEvents) {
                     const eventTeams = await this.fetchEventTeams(event.key);
                     eventTeams.forEach(t => {
                         if (!teamMap.has(t.team_number)) {
@@ -71,7 +57,7 @@ document.addEventListener('alpine:init', () => {
                     eventKeys: t.eventKeys || []
                 })).sort((a, b) => a.teamNumber - b.teamNumber);
 
-                // 2. Fetch Pit Reports from Firestore
+                // 3. Fetch Pit Reports from Firestore
                 db.collection('pitScouting').onSnapshot(snapshot => {
                     this.pitReports = {};
                     snapshot.forEach(doc => {

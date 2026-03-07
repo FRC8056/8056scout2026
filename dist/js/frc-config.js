@@ -7,7 +7,11 @@ const DEFAULT_EVENTS = [
     { key: "2026tuhc", name: "Haliç Regional 2026", season: 2026 },
     { key: "2026tuis", name: "Istanbul Regional 2026", season: 2026 },
     { key: "2026marm", name: "Marmara Regional 2026", season: 2026 },
-    { key: "2026bask", name: "Başkent Regional 2026", season: 2026 }
+    { key: "2026bask", name: "Başkent Regional 2026", season: 2026 },
+    { key: "2025tuhc", name: "Haliç Regional 2025", season: 2025 },
+    { key: "2025tuis", name: "Istanbul Regional 2025", season: 2025 },
+    { key: "2025tumb", name: "Marmara Regional 2025", season: 2025 },
+    { key: "2025tubk", name: "Bosphorus Regional 2025", season: 2025 }
 ];
 
 // Combine hardcoded events with custom ones (custom ones override defaults)

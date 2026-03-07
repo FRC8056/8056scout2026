@@ -60,7 +60,7 @@
             <div class="filter-chips">
                 <template x-for="year in availableSeasons">
                     <button
-                        @click="selectedSeasons.includes(year) ? selectedSeasons = selectedSeasons.filter(y => y !== year) : selectedSeasons.push(year)"
+                        @click="selectedSeasons.includes(year) ? selectedSeasons = selectedSeasons.filter(y => y !== year) : selectedSeasons.push(year); init()"
                         :class="selectedSeasons.includes(year) ? 'filter-chip--active' : 'filter-chip--inactive'"
                         class="filter-chip" x-text="year"></button>
                 </template>
@@ -73,7 +73,7 @@
                 <template x-for="event in availableEvents.filter(e => selectedSeasons.includes(e.season))"
                     :key="event.key">
                     <button
-                        @click="selectedEvents.includes(event.key) ? selectedEvents = selectedEvents.filter(k => k !== event.key) : selectedEvents.push(event.key)"
+                        @click="selectedEvents.includes(event.key) ? selectedEvents = selectedEvents.filter(k => k !== event.key) : selectedEvents.push(event.key); init()"
                         :class="selectedEvents.includes(event.key) ? 'filter-regional-btn--active' : 'filter-regional-btn--inactive'"
                         class="filter-regional-btn" x-text="event.name"></button>
                 </template>
