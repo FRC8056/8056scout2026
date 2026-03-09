@@ -28,12 +28,10 @@ document.addEventListener('alpine:init', () => {
                 }
 
                 this.$watch('selectedEvents', () => {
-                    this.fetchMatches(); // No longer awaited since Alpine handles the re-render reactivity 
+                    this.fetchMatches();
                 });
 
                 this.$watch('selectedSeasons', () => {
-                    // Changing season can change the available events, but we just trigger a refetch
-                    // the filteredMatches computed function handles the visual filtering.
                     this.fetchMatches();
                 });
 
