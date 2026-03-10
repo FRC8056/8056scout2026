@@ -140,10 +140,22 @@
         <div>
           <label class="form-label--simple">Auto Scored</label>
           <div class="gap-grid">
-            <template x-for="i in 20">
-              <button @click="auto.scored = (i-1)*5 + '-' + i*5" class="gap-btn"
-                :class="auto.scored === ((i-1)*5 + '-' + i*5) ? 'gap-btn--active' : 'gap-btn--inactive'">
-                <span class="gap-btn__range" x-text="((i-1)*5) + '-' + (i*5)"></span>
+            <template x-for="range in autoRanges">
+              <button @click="auto.scored = range" class="gap-btn"
+                :class="auto.scored === range ? 'gap-btn--active' : 'gap-btn--inactive'">
+                <span class="gap-btn__range" x-text="range"></span>
+              </button>
+            </template>
+          </div>
+        </div>
+
+        <div>
+          <label class="form-label--simple">Auto Failed Attempt</label>
+          <div class="gap-grid">
+            <template x-for="range in autoRanges">
+              <button @click="auto.failed = range" class="gap-btn"
+                :class="auto.failed === range ? 'gap-btn--active' : 'gap-btn--inactive'">
+                <span class="gap-btn__range" x-text="range"></span>
               </button>
             </template>
           </div>
@@ -151,23 +163,24 @@
       </div>
     </section>
 
-    <!-- SHIFTS (Transition, Teleop A, Teleop B) -->
+    <!-- SHIFTS (Transition, Teleop A, Teleop B, Endgame) -->
     <template x-for="shift in [
-      { key: 'transitionShift', label: 'Transition Shift', color: 'orange' },
-      { key: 'teleopShiftA', label: 'Teleop Shift A', color: 'blue' },
-      { key: 'teleopShiftB', label: 'Teleop Shift B', color: 'blue' }
+      { key: 'transitionShift', label: 'Transition Shift', color: 'orange', number: '03' },
+      { key: 'teleopShiftA', label: 'Teleop Shift A', color: 'blue', number: '04' },
+      { key: 'teleopShiftB', label: 'Teleop Shift B', color: 'blue', number: '05' },
+      { key: 'endgameShiftA', label: 'Endgame Shift A', color: 'purple', number: '06' },
+      { key: 'endgameShiftB', label: 'Endgame Shift B', color: 'purple', number: '07' }
     ]">
       <section :class="'card--' + shift.color">
         <h2 :class="'section-title--' + shift.color">
-          <span :class="'section-number--' + shift.color"
-            x-text="shift.label.includes('Transition') ? '03' : (shift.key === 'teleopShiftA' ? '04' : '05')"></span>
+          <span :class="'section-number--' + shift.color" x-text="shift.number"></span>
           <span x-text="shift.label"></span>
         </h2>
         <div class="gap-grid">
-          <template x-for="i in 20">
-            <button @click="$data[shift.key] = (i-1)*5 + '-' + i*5" class="gap-btn"
-              :class="$data[shift.key] === ((i-1)*5 + '-' + i*5) ? 'gap-btn--active' : 'gap-btn--inactive'">
-              <span class="gap-btn__range" x-text="((i-1)*5) + '-' + (i*5)"></span>
+          <template x-for="range in teleopRanges">
+            <button @click="$data[shift.key] = range" class="gap-btn"
+              :class="$data[shift.key] === range ? 'gap-btn--active' : 'gap-btn--inactive'">
+              <span class="gap-btn__range" x-text="range"></span>
             </button>
           </template>
         </div>
@@ -175,10 +188,9 @@
     </template>
 
 
-    <!-- ENDGAME & RATINGS -->
     <section class="card--purple">
       <h2 class="section-title--purple">
-        <span class="section-number--purple">07</span>
+        <span class="section-number--purple">08</span>
         Endgame &amp; Ratings
       </h2>
 
@@ -200,8 +212,8 @@
         <div class="timer-container">
           <div class="timer-display" x-text="timerSeconds.toFixed(1)">0.0</div>
           <div class="timer-controls">
-            <button @click="startTimer" class="btn-timer--record" v-if="!timerActive">Start Timer</button>
-            <button @click="stopTimer" class="btn-timer--record" v-if="timerActive">Pause</button>
+            <button @click="startTimer" class="btn-timer--record" x-show="!timerActive">Start Timer</button>
+            <button @click="stopTimer" class="btn-timer--record" x-show="timerActive">Pause</button>
             <button @click="recordClimb" class="btn-timer--record">Record Time</button>
             <button @click="resetTimer" class="btn-timer--reset">Reset</button>
           </div>
@@ -214,12 +226,13 @@
 
         <!-- Ratings -->
         <div class="stack-spacing--6">
-          <template x-for="(label, key) in { 
-            driver: 'Driver Skill', 
-            speed: 'Robot Speed', 
+          <template x-for="([key, label]) in Object.entries({
+            driver: 'Driver Skill',
+            speed: 'Robot Speed',
+            shooterSpeed: 'Shooter Speed',
             defense: 'Defensive Ability',
-            stability: 'Stability' 
-          }">
+            stability: 'Stability'
+          })">
             <div>
               <div class="range-header">
                 <label class="range-label" x-text="label"></label>

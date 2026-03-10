@@ -9,6 +9,14 @@ document.addEventListener('alpine:init', () => {
         },
 
         init() {
+            // Handle URL Parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('season')) this.selectedYear = urlParams.get('season');
+            if (urlParams.has('regional')) this.regional = urlParams.get('regional');
+            if (urlParams.has('type')) this.matchType = urlParams.get('type');
+            if (urlParams.has('match')) this.matchNumber = urlParams.get('match');
+            if (urlParams.has('team')) this.teamNumber = urlParams.get('team');
+
             // Watch for year changes to reset regional
             this.$watch('selectedYear', (val) => {
                 const firstEvent = this.filteredEvents[0];
@@ -26,12 +34,24 @@ document.addEventListener('alpine:init', () => {
         teamNumber: '',
         matchType: 'Qualification',
         alliance: '',
-        auto: { level1: 'none', scored: '0-5' },
-        transitionShift: '0-5',
-        teleopShiftA: '0-5',
-        teleopShiftB: '0-5',
+
+        // Counter Definitions
+        get autoRanges() {
+            return ['0', '1-5', '5-10', '10-15', '15-20'];
+        },
+        get teleopRanges() {
+            const ranges = ['0', '1-5', '5-10', '10-15', '15-20', '20-25', '25-30', '30-40', '40-50', '50-60', '60-70', '70-80', '80-95', '95-110', '110-130', '130-150', '150-180', '180-210', '210-250', '250-300'];
+            return ranges;
+        },
+
+        auto: { level1: 'none', scored: '0', failed: '0' },
+        transitionShift: '0',
+        teleopShiftA: '0',
+        teleopShiftB: '0',
+        endgameShiftA: '0',
+        endgameShiftB: '0',
         endgame: { level: 'none', climbTime: null },
-        ratings: { driver: 3, speed: 3, defense: 3, stability: 3, comments: '' },
+        ratings: { driver: 3, speed: 3, shooterSpeed: 3, defense: 3, stability: 3, comments: '' },
         isTestData: false,
         loading: false,
 
@@ -114,6 +134,8 @@ document.addEventListener('alpine:init', () => {
                         transitionShift: this.transitionShift,
                         teleopShiftA: this.teleopShiftA,
                         teleopShiftB: this.teleopShiftB,
+                        endgameShiftA: this.endgameShiftA,
+                        endgameShiftB: this.endgameShiftB,
                         endgame: { ...this.endgame },
                         ratings: { ...this.ratings },
                     },

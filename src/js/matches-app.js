@@ -289,39 +289,50 @@ document.addEventListener('alpine:init', () => {
         calculateScores(entry, year) {
             if (!entry) return { auto: 0, teleop: 0, endgame: 0, totalFuel: 0, total: 0 };
 
-            // In 2026, scoring rules might vary. Defaulting to points per action.
-            // L1/Net (2pts), L2/L3/Proc (3/4/6pts), L4 (5pts)
+            // Improved Score Estimation logic for 2026
+            const parseRange = (val) => {
+                if (!val || val === '0') return 0;
+                if (typeof val === 'string' && val.includes('-')) {
+                    const p = val.split('-').map(Number);
+                    return (p[0] + p[1]) / 2;
+                }
+                return Number(val) || 0;
+            };
 
             // Auto
             let autoPoints = 0;
-            autoPoints += (entry.auto?.l1 || 0) * 3;
-            autoPoints += (entry.auto?.l2 || 0) * 4;
-            autoPoints += (entry.auto?.l3 || 0) * 6;
-            autoPoints += (entry.auto?.l4 || 0) * 7;
-            autoPoints += (entry.auto?.net || 0) * 4;
-            autoPoints += (entry.auto?.processor || 0) * 6;
-            if (entry.auto?.level1 === 'success') autoPoints += 3; // Leave line
+            autoPoints += parseRange(entry.auto?.scored) * 4;
+            if (entry.auto?.level1 === 'success') autoPoints += 3;
 
-            // Teleop (Shifts A/B logic -> Coral/Algae equivalent proxy mapping for now based on previous var reuse by user)
-            // Wait, looking at the code, in scout-app transitionShift is L1, teleopShiftA is L2, teleopShiftB is L3, etc.
+            // Teleop & Transition
             let teleopPoints = 0;
-            teleopPoints += (entry.transitionShift || 0) * 2; // L1 Proxy
-            teleopPoints += (entry.teleopShiftA || 0) * 3; // L2 Proxy
-            teleopPoints += (entry.teleopShiftB || 0) * 4; // L3 Proxy
+            teleopPoints += parseRange(entry.transitionShift) * 2;
+            teleopPoints += parseRange(entry.teleopShiftA) * 3;
+            teleopPoints += parseRange(entry.teleopShiftB) * 4;
 
-            // Endgame
-            let endgamePoints = 0;
+            // Endgame Shifts
+            let endgameShiftPoints = 0;
+            endgameShiftPoints += parseRange(entry.endgameShiftA) * 5;
+            endgameShiftPoints += parseRange(entry.endgameShiftB) * 6;
+
+            // Climb
+            let climbPoints = 0;
             const level = entry.endgame?.level?.toLowerCase();
-            if (level === 'park') endgamePoints = 2;
-            else if (level === 'shallow') endgamePoints = 6;
-            else if (level === 'deep') endgamePoints = 12;
+            if (level === 'park') climbPoints = 2;
+            else if (level === 'shallow') climbPoints = 6;
+            else if (level === 'deep') climbPoints = 12;
 
             return {
                 auto: autoPoints,
-                teleop: teleopPoints,
-                endgame: endgamePoints,
-                totalFuel: 0,
-                total: autoPoints + teleopPoints + endgamePoints
+                teleop: teleopPoints + endgameShiftPoints,
+                endgame: climbPoints,
+                total: autoPoints + teleopPoints + endgameShiftPoints + climbPoints,
+                details: {
+                    autoFailed: entry.auto?.failed || '0',
+                    shooterSpeed: entry.ratings?.shooterSpeed || 3,
+                    endgameShiftA: entry.endgameShiftA || '0',
+                    endgameShiftB: entry.endgameShiftB || '0'
+                }
             };
         },
 
