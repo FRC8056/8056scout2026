@@ -310,10 +310,9 @@ document.addEventListener('alpine:init', () => {
             teleopPoints += parseRange(entry.teleopShiftA) * 3;
             teleopPoints += parseRange(entry.teleopShiftB) * 4;
 
-            // Endgame Shifts
+            // Endgame Shift
             let endgameShiftPoints = 0;
-            endgameShiftPoints += parseRange(entry.endgameShiftA) * 5;
-            endgameShiftPoints += parseRange(entry.endgameShiftB) * 6;
+            endgameShiftPoints += parseRange(entry.endgameShift) * 5;
 
             // Climb
             let climbPoints = 0;
@@ -324,14 +323,13 @@ document.addEventListener('alpine:init', () => {
 
             return {
                 auto: autoPoints,
-                teleop: teleopPoints + endgameShiftPoints,
-                endgame: climbPoints,
+                teleop: teleopPoints,
+                endgame: climbPoints + endgameShiftPoints,
                 total: autoPoints + teleopPoints + endgameShiftPoints + climbPoints,
                 details: {
                     autoFailed: entry.auto?.failed || '0',
                     shooterSpeed: entry.ratings?.shooterSpeed || 3,
-                    endgameShiftA: entry.endgameShiftA || '0',
-                    endgameShiftB: entry.endgameShiftB || '0'
+                    endgameShift: entry.endgameShift || '0'
                 }
             };
         },

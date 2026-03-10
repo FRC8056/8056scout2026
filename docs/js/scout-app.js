@@ -33,23 +33,25 @@ document.addEventListener('alpine:init', () => {
         matchNumber: '',
         teamNumber: '',
         matchType: 'Qualification',
-        alliance: '',
-
         // Counter Definitions
         get autoRanges() {
-            return ['0', '1-5', '5-10', '10-15', '15-20'];
+            // Up to 150 with expanding gaps
+            return ['0', '1-5', '5-10', '10-15', '15-20', '20-25', '25-30', '30-40', '40-50', '50-60', '60-80', '80-100', '100-125', '125-150'];
+        },
+        get transitionRanges() {
+            // Up to 100 with expanding gaps
+            return ['0', '1-5', '5-10', '10-15', '15-20', '20-25', '25-30', '30-40', '40-50', '50-65', '65-80', '80-100'];
         },
         get teleopRanges() {
-            const ranges = ['0', '1-5', '5-10', '10-15', '15-20', '20-25', '25-30', '30-40', '40-50', '50-60', '60-70', '70-80', '80-95', '95-110', '110-130', '130-150', '150-180', '180-210', '210-250', '250-300'];
-            return ranges;
+            // Up to 300 with expanding gaps
+            return ['0', '1-5', '5-10', '10-15', '15-20', '20-25', '25-30', '30-40', '40-50', '50-60', '60-70', '70-80', '80-95', '95-110', '110-130', '130-150', '150-180', '180-210', '210-250', '250-300'];
         },
 
         auto: { level1: 'none', scored: '0', failed: '0' },
         transitionShift: '0',
         teleopShiftA: '0',
         teleopShiftB: '0',
-        endgameShiftA: '0',
-        endgameShiftB: '0',
+        endgameShift: '0',
         endgame: { level: 'none', climbTime: null },
         ratings: { driver: 3, speed: 3, shooterSpeed: 3, defense: 3, stability: 3, comments: '' },
         isTestData: false,
@@ -134,8 +136,7 @@ document.addEventListener('alpine:init', () => {
                         transitionShift: this.transitionShift,
                         teleopShiftA: this.teleopShiftA,
                         teleopShiftB: this.teleopShiftB,
-                        endgameShiftA: this.endgameShiftA,
-                        endgameShiftB: this.endgameShiftB,
+                        endgameShift: this.endgameShift,
                         endgame: { ...this.endgame },
                         ratings: { ...this.ratings },
                     },

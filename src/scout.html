@@ -163,13 +163,11 @@
       </div>
     </section>
 
-    <!-- SHIFTS (Transition, Teleop A, Teleop B, Endgame) -->
+    <!-- SHIFTS (Transition, Teleop A, Teleop B) -->
     <template x-for="shift in [
-      { key: 'transitionShift', label: 'Transition Shift', color: 'orange', number: '03' },
-      { key: 'teleopShiftA', label: 'Teleop Shift A', color: 'blue', number: '04' },
-      { key: 'teleopShiftB', label: 'Teleop Shift B', color: 'blue', number: '05' },
-      { key: 'endgameShiftA', label: 'Endgame Shift A', color: 'purple', number: '06' },
-      { key: 'endgameShiftB', label: 'Endgame Shift B', color: 'purple', number: '07' }
+      { key: 'transitionShift', label: 'Transition Shift', color: 'orange', number: '03', ranges: 'transitionRanges' },
+      { key: 'teleopShiftA', label: 'Teleop Shift A', color: 'blue', number: '04', ranges: 'teleopRanges' },
+      { key: 'teleopShiftB', label: 'Teleop Shift B', color: 'blue', number: '05', ranges: 'teleopRanges' }
     ]">
       <section :class="'card--' + shift.color">
         <h2 :class="'section-title--' + shift.color">
@@ -177,7 +175,7 @@
           <span x-text="shift.label"></span>
         </h2>
         <div class="gap-grid">
-          <template x-for="range in teleopRanges">
+          <template x-for="range in $data[shift.ranges]">
             <button @click="$data[shift.key] = range" class="gap-btn"
               :class="$data[shift.key] === range ? 'gap-btn--active' : 'gap-btn--inactive'">
               <span class="gap-btn__range" x-text="range"></span>
@@ -190,11 +188,22 @@
 
     <section class="card--purple">
       <h2 class="section-title--purple">
-        <span class="section-number--purple">08</span>
+        <span class="section-number--purple">06</span>
         Endgame &amp; Ratings
       </h2>
 
       <div class="stack-spacing--6">
+        <div>
+          <label class="form-label--muted">Endgame Shift</label>
+          <div class="gap-grid mb-4">
+            <template x-for="range in teleopRanges">
+              <button @click="endgameShift = range" class="gap-btn"
+                :class="endgameShift === range ? 'gap-btn--active' : 'gap-btn--inactive'">
+                <span class="gap-btn__range" x-text="range"></span>
+              </button>
+            </template>
+          </div>
+        </div>
         <div>
           <label class="form-label--muted">Climb Level</label>
           <select x-model="endgame.level" class="form-select--purple">
