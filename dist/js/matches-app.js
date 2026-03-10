@@ -4,8 +4,8 @@ document.addEventListener('alpine:init', () => {
         scoutEntries: {},
         availableSeasons: FRC_CONFIG.seasons,
         availableEvents: FRC_CONFIG.events,
-        selectedSeasons: [FRC_CONFIG.defaultSeason],
-        selectedEvents: [FRC_CONFIG.events.find(e => e.season === FRC_CONFIG.defaultSeason)?.key].filter(Boolean),
+        selectedSeasons: [...FRC_CONFIG.seasons],
+        selectedEvents: FRC_CONFIG.events.filter(e => e.season === 2026).map(e => e.key),
         selectedTypes: ['Qualification'],
         searchQuery: '',
         loading: true,
@@ -31,9 +31,6 @@ document.addEventListener('alpine:init', () => {
                     this.fetchMatches();
                 });
 
-                this.$watch('selectedSeasons', () => {
-                    this.fetchMatches();
-                });
 
                 await this.fetchMatches();
 

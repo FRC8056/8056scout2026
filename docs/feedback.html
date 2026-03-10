@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback - REBUILT 2026</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/theme.js"></script>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+
+<body class="page-body--padded" x-data="feedbackApp">
+    <nav class="top-nav">
+        <div class="top-nav__inner">
+            <div class="top-nav__left">
+                <button @click="location.href='dashboard.html'" class="back-btn--shadow">
+                    <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
+                        </path>
+                    </svg>
+                    Back
+                </button>
+            </div>
+            <div class="top-nav__center">
+                <img src="img/logo.png" alt="Logo" class="brand__logo--nav">
+                <span class="brand__subtitle--orange">Feedback</span>
+            </div>
+            <div class="top-nav__right"></div>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto space-y-8">
+        <!-- New Review Button -->
+        <div class="flex justify-between items-center">
+            <h1 class="text-2xl font-black text-white">App Reviews</h1>
+            <button @click="showForm = true" class="btn--primary px-6 py-2">
+                Add Review
+            </button>
+        </div>
+
+        <!-- Feedback Form Modal -->
+        <template x-if="showForm">
+            <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/90 backdrop-blur-sm">
+                <div class="bg-slate-800 border border-white/10 rounded-2xl p-6 w-full max-w-lg space-y-6 shadow-2xl">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-xl font-black text-white">Submit Feedback</h2>
+                        <button @click="showForm = false" class="text-slate-400 hover:text-white">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <p
+                        class="text-[10px] text-slate-400 font-bold uppercase tracking-widest bg-orange-500/10 p-2 rounded border border-orange-500/20">
+                        Note: Your full name will be visible to everyone on your report.
+                    </p>
+
+                    <div class="space-y-4">
+                        <!-- Star Ratings -->
+                        <div class="grid grid-cols-1 gap-4">
+                            <template x-for="category in ['Performance', 'Design', 'Ease of Use']">
+                                <div
+                                    class="flex justify-between items-center bg-slate-700/30 p-3 rounded-lg border border-white/5">
+                                    <span class="text-sm font-bold text-slate-300" x-text="category"></span>
+                                    <div class="flex gap-1">
+                                        <template x-for="n in 5">
+                                            <button @click="ratings[category] = n"
+                                                class="p-1 transition-transform hover:scale-110">
+                                                <svg class="w-5 h-5"
+                                                    :class="ratings[category] >= n ? 'text-orange-500 fill-orange-500' : 'text-slate-600'"
+                                                    viewBox="0 0 20 20" fill="currentColor">
+                                                    <path
+                                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                </svg>
+                                            </button>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <div>
+                            <label class="form-label--filter mb-2 block">Comment</label>
+                            <textarea x-model="comment" placeholder="What do you think about the app?"
+                                class="form-input--search min-h-[100px] w-full resize-none"></textarea>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" x-model="isTest"
+                                class="form-checkbox bg-slate-700 border-white/10 rounded text-orange-500">
+                            <label class="text-xs font-bold text-slate-400">This is a test review</label>
+                        </div>
+
+                        <button @click="submitFeedback" :disabled="submitting || !comment"
+                            class="btn--primary w-full py-3 font-black uppercase tracking-widest disabled:opacity-50">
+                            <span x-show="!submitting">Submit Review</span>
+                            <span x-show="submitting">Submitting...</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Feedback List -->
+        <div class="space-y-4">
+            <div x-show="!loading && feedbacks.length === 0"
+                class="text-center py-12 bg-slate-800/20 rounded-2xl border border-dashed border-white/10">
+                <p class="text-slate-500 font-bold uppercase tracking-widest text-xs">No reviews yet. Be the first!</p>
+            </div>
+
+            <template x-for="fb in feedbacks" :key="fb.id">
+                <div class="match-card-new p-6 space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-center gap-4">
+                            <!-- Team Logo Placeholder -->
+                            <div
+                                class="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center border border-orange-500/20">
+                                <span class="text-orange-500 font-black text-sm" x-text="fb.fromTeam"></span>
+                            </div>
+                            <div>
+                                <h3 class="text-white font-black" x-text="fb.fromTeamName"></h3>
+                                <p class="text-xs text-slate-500 font-bold flex items-center gap-2">
+                                    <span x-text="fb.userName"></span>
+                                    <template x-if="fb.userVerified">
+                                        <svg class="w-3 h-3 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd"
+                                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                    </template>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[10px] text-slate-500 font-black uppercase tracking-wider"
+                                x-text="formatDate(fb.createdAt)"></p>
+                            <template x-if="fb.isTest">
+                                <span class="badge badge--test text-[8px] mt-1 inline-block">TEST REVIEW</span>
+                            </template>
+                        </div>
+                    </div>
+
+                    <p class="text-slate-300 text-sm leading-relaxed" x-text="fb.comment"></p>
+
+                    <div class="flex flex-wrap gap-4 pt-4 border-t border-white/5">
+                        <template x-for="(val, cat) in fb.ratings">
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest"
+                                    x-text="cat"></span>
+                                <div class="flex gap-0.5">
+                                    <template x-for="n in 5">
+                                        <svg class="w-3 h-3"
+                                            :class="val >= n ? 'text-orange-500 fill-orange-500' : 'text-slate-700'"
+                                            viewBox="0 0 20 20" fill="currentColor">
+                                            <path
+                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </main>
+
+    <script src="js/auth.js"></script>
+    <script src="js/feedback-app.js"></script>
+</body>
+
+</html>

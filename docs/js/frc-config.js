@@ -12,10 +12,7 @@ const DEFAULT_EVENTS = [
     { key: "2026tuis5", name: "Avrasya Regional 2026", season: 2026 },
     { key: "2026baskent", name: "Başkent Regional 2026", season: 2026 },
     { key: "2026tuak", name: "Ankara Regional 2026", season: 2026 },
-<<<<<<< HEAD
     { key: "2025tuak", name: "Ankara Regional 2025", season: 2025 },
-=======
->>>>>>> ab4e1b224fb20452fd3e9338b89abe488ae242dd
     { key: "2025tuhc", name: "Haliç Regional 2025", season: 2025 },
     { key: "2025tuis", name: "Istanbul Regional 2025", season: 2025 },
     { key: "2025tumb", name: "Marmara Regional 2025", season: 2025 },
