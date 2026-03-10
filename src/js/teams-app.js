@@ -8,11 +8,10 @@ document.addEventListener('alpine:init', () => {
         availableSeasons: FRC_CONFIG.seasons,
         availableEvents: FRC_CONFIG.events,
         selectedSeasons: [...FRC_CONFIG.seasons],
-        selectedEvents: FRC_CONFIG.events.map(e => e.key),
+        selectedEvents: FRC_CONFIG.events.filter(e => e.season === 2026).map(e => e.key),
         searchQuery: '',
         loading: true,
-
-        mergeMode: true,
+        mergeMode: false,
         teamEventMatrix: {}, // Tracks which team is in which selected event
 
         async init() {
@@ -27,7 +26,6 @@ document.addEventListener('alpine:init', () => {
 
             // Instant refresh on selection changes
             this.$watch('selectedEvents', () => this.fetchEventTeams());
-            this.$watch('selectedSeasons', () => this.fetchEventTeams());
 
             await this.fetchEventTeams();
 

@@ -55,17 +55,6 @@
             <input x-model="searchQuery" type="text" placeholder="Team # or Name..." class="form-input--search">
         </div>
 
-        <div class="filter-group">
-            <label class="form-label--filter">Seasons</label>
-            <div class="filter-chips">
-                <template x-for="year in availableSeasons">
-                    <button
-                        @click="selectedSeasons.includes(year) ? selectedSeasons = selectedSeasons.filter(y => y !== year) : selectedSeasons.push(year)"
-                        :class="selectedSeasons.includes(year) ? 'filter-chip--active' : 'filter-chip--inactive'"
-                        class="filter-chip" x-text="year"></button>
-                </template>
-            </div>
-        </div>
 
         <div class="filter-group">
             <label class="form-label--filter">Regionals</label>
