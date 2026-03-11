@@ -113,6 +113,17 @@
                         <!-- Score Preview -->
                         <div class="flex items-center gap-4">
                             <div class="match-card__scores">
+                                <!-- SCOUT MATCH SHORTCUT -->
+                                <a :href="`scout.html?season=${selectedSeasons[0] || match.eventKey.substring(0,4)}&regional=${match.eventKey}&type=${match.type}&match=${match.matchNumber}`"
+                                    class="mr-2 px-2 py-1 bg-orange-500/10 hover:bg-orange-500 text-orange-400 hover:text-white rounded border border-orange-500/20 text-[9px] font-black uppercase tracking-tighter transition-all flex items-center gap-1.5 pointer-events-auto"
+                                    @click.stop>
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                            d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                    Scout
+                                </a>
+
                                 <!-- VIEW ON TBA -->
                                 <a :href="FRC_CONFIG.getTbaMatchUrl(match.eventKey, match.type, match.matchNumber)"
                                     target="_blank"
@@ -194,333 +205,302 @@
                                     </div>
                                 </template>
                                 <template x-if="match.scoreBreakdown?.red">
-                                    <div
-                                        class="mt-2 pt-2 border-t border-red-500/10 flex flex-col gap-1 text-[9px] uppercase font-bold text-red-400/90">
-                                        <div class="flex justify-between"><span>Auto Points:</span> <span
-                                                x-text="(match.scoreBreakdown.red.autoPoints !== null) ? match.scoreBreakdown.red.autoPoints : '—'"></span>
-                                        </div>
-                                        <div class="flex justify-between text-[8px] opacity-80 pl-2"><span>└ Auto
-                                                Climb:</span> <span
-                                                x-text="match.scoreBreakdown.red.autoLeavePoints"></span>
-                                        </div>
-                                        <div class="flex justify-between"><span>Tele-op Points:</span> <span
-                                                x-text="(match.scoreBreakdown.red.teleopPoints !== null) ? match.scoreBreakdown.red.teleopPoints : '—'"></span>
-                                        </div>
-                                        <div class="flex justify-between"><span>Endgame Points:</span> <span
-                                                x-text="(match.scoreBreakdown.red.endGamePoints !== null) ? match.scoreBreakdown.red.endGamePoints : '—'"></span>
-                                        </div>
-                                        <div class="flex justify-between text-[8px] opacity-80 pl-2"><span>└ Climb
-                                                Points:</span> <span
-                                                x-text="match.scoreBreakdown.red.endGameClimbPoints"></span>
-                                        </div>
-                                        <div class="flex justify-between text-red-300"><span>Foul Points:</span> <span
-                                                x-text="(match.scoreBreakdown.red.foulPoints !== null) ? match.scoreBreakdown.red.foulPoints : '—'"></span>
-                                        </div>
-                                        <div class="flex justify-between text-white border-t border-red-500/20 pt-1">
-                                            <span>Total Score:</span> <span x-text="match.scoreRedFinal"></span>
-                                        </div>
+                                    <div class="flex justify-between uppercase"><span>Auto Points:</span> <span
+                                            x-text="(match.scoreBreakdown.red.autoPoints !== null) ? match.scoreBreakdown.red.autoPoints : '—'"></span>
                                     </div>
-                                </template>
-                                <template x-if="!match.scoreBreakdown">
-                                    <span class="no-api-text text-[9px] text-slate-500 mt-1">No scores yet</span>
-                                </template>
+                                    <div class="flex justify-between"><span>Fuel Points:</span> <span
+                                            x-text="match.scoreBreakdown.red.fuelPoints"></span>
+                                    </div>
+                                    <div class="flex justify-between"><span>Tower/Climb:</span> <span
+                                            x-text="match.scoreBreakdown.red.climbPoints"></span>
+                                    </div>
+                                    <div class="flex justify-between text-red-300"><span>Foul Points:</span> <span
+                                            x-text="(match.scoreBreakdown.red.foulPoints !== null) ? match.scoreBreakdown.red.foulPoints : '—'"></span>
+                                    </div>
+                                    <div class="flex justify-between text-white border-t border-red-500/20 pt-1">
+                                        <span>Total Score:</span> <span x-text="match.scoreRedFinal"></span>
+                                    </div>
+                            </div>
+        </template>
+        <template x-if="!match.scoreBreakdown">
+            <span class="no-api-text text-[9px] text-slate-500 mt-1">No scores yet</span>
+        </template>
+    </div>
+    </div>
+    <!-- Blue -->
+    <div class="alliance-panel--blue">
+        <span class="alliance-title--blue">Blue Alliance</span>
+        <div class="alliance-teams">
+            <template x-for="t in (match.teams || []).filter(t => t.station.startsWith('Blue'))" :key="t.teamNumber">
+                <div class="flex flex-col">
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-[10px] font-black text-blue-500" x-text="t.teamNumber"></span>
+                        <span class="text-[9px] text-white font-bold truncate max-w-[100px]"
+                            x-text="getTeamData(t.teamNumber).nickname || 'Team'"></span>
+                    </div>
+                </div>
+            </template>
+            <template x-if="match.scoreBreakdown?.blue">
+                <div
+                    class="mt-2 pt-2 border-t border-blue-500/10 flex flex-col gap-1 text-[9px] uppercase font-bold text-blue-400/90">
+                    <div class="flex justify-between uppercase"><span>Auto Points:</span> <span
+                            x-text="(match.scoreBreakdown.blue.autoPoints !== null) ? match.scoreBreakdown.blue.autoPoints : '—'"></span>
+                    </div>
+                    <div class="flex justify-between"><span>Fuel Points:</span> <span
+                            x-text="match.scoreBreakdown.blue.fuelPoints"></span>
+                    </div>
+                    <div class="flex justify-between"><span>Tower/Climb:</span> <span
+                            x-text="match.scoreBreakdown.blue.climbPoints"></span>
+                    </div>
+                    <div class="flex justify-between text-blue-300"><span>Foul Points:</span> <span
+                            x-text="(match.scoreBreakdown.blue.foulPoints !== null) ? match.scoreBreakdown.blue.foulPoints : '—'"></span>
+                    </div>
+                    <div class="flex justify-between text-white border-t border-blue-500/20 pt-1">
+                        <span>Total Score:</span> <span x-text="match.scoreBlueFinal"></span>
+                    </div>
+                </div>
+            </template>
+            <template x-if="!match.scoreBreakdown">
+                <span class="no-api-text text-[9px] text-slate-500 mt-1">No scores yet</span>
+            </template>
+        </div>
+    </div>
+    </div>
+
+    <!-- Scouted Data (Bottom) -->
+    <div class="scout-section">
+        <h4 class="scout-section__title">Scouting Reports</h4>
+        <div class="stack-spacing--4">
+            <template x-for="entry in scoutEntries[match.eventKey + '_' + match.type + '_' + match.matchNumber] || []"
+                :key="entry.id">
+                <div class="scout-report">
+                    <!-- Expandable Summary Header -->
+                    <div @click="toggleReport(entry.id)" class="scout-report__summary-header">
+                        <div class="scout-report__summary-left">
+                            <div class="flex flex-col">
+                                <div class="flex items-center gap-1.5">
+                                    <div class="scout-report__team-badge--sm" x-text="'#' + entry.teamNumber"></div>
+                                    <span class="text-[10px] font-black text-slate-300 truncate max-w-[80px]"
+                                        x-text="getTeamData(entry.teamNumber).nickname || ''"></span>
+                                    <template x-if="entry.meta?.isTestData">
+                                        <span
+                                            class="text-[9px] font-black px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 uppercase tracking-widest">TEST</span>
+                                    </template>
+                                </div>
+                                <div class="scout-report__scouter-inline">
+                                    <span class="scout-report__scouter-team-text"
+                                        x-text="'Scouted by #' + (entry.meta?.scouterTeam || entry.meta?.scouterTeamNumber || '?')"></span>
+                                    <span class="text-[9px] text-slate-500 font-bold ml-1 truncate max-w-[80px]"
+                                        x-text="getTeamData(entry.meta?.scouterTeam || entry.meta?.scouterTeamNumber).nickname"></span>
+                                    <template x-if="isVerified(entry.meta?.scouterRole)">
+                                        <div class="scout-report__verified-tick">
+                                            <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                                    d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </div>
+                                    </template>
+                                </div>
                             </div>
                         </div>
-                        <!-- Blue -->
-                        <div class="alliance-panel--blue">
-                            <span class="alliance-title--blue">Blue Alliance</span>
-                            <div class="alliance-teams">
-                                <template x-for="t in (match.teams || []).filter(t => t.station.startsWith('Blue'))"
-                                    :key="t.teamNumber">
-                                    <div class="flex flex-col">
-                                        <div class="flex items-center gap-1.5">
-                                            <span class="text-[10px] font-black text-blue-500"
-                                                x-text="t.teamNumber"></span>
-                                            <span class="text-[9px] text-white font-bold truncate max-w-[100px]"
-                                                x-text="getTeamData(t.teamNumber).nickname || 'Team'"></span>
-                                        </div>
-                                    </div>
-                                </template>
-                                <template x-if="match.scoreBreakdown?.blue">
-                                    <div
-                                        class="mt-2 pt-2 border-t border-blue-500/10 flex flex-col gap-1 text-[9px] uppercase font-bold text-blue-400/90">
-                                        <div class="flex justify-between"><span>Auto Points:</span> <span
-                                                x-text="(match.scoreBreakdown.blue.autoPoints !== null) ? match.scoreBreakdown.blue.autoPoints : '—'"></span>
-                                        </div>
-                                        <div class="flex justify-between text-[8px] opacity-80 pl-2"><span>└ Auto
-                                                Climb:</span> <span
-                                                x-text="match.scoreBreakdown.blue.autoLeavePoints"></span>
-                                        </div>
-                                        <div class="flex justify-between"><span>Tele-op Points:</span> <span
-                                                x-text="(match.scoreBreakdown.blue.teleopPoints !== null) ? match.scoreBreakdown.blue.teleopPoints : '—'"></span>
-                                        </div>
-                                        <div class="flex justify-between"><span>Endgame Points:</span> <span
-                                                x-text="(match.scoreBreakdown.blue.endGamePoints !== null) ? match.scoreBreakdown.blue.endGamePoints : '—'"></span>
-                                        </div>
-                                        <div class="flex justify-between text-[8px] opacity-80 pl-2"><span>└ Climb
-                                                Points:</span> <span
-                                                x-text="match.scoreBreakdown.blue.endGameClimbPoints"></span>
-                                        </div>
-                                        <div class="flex justify-between text-blue-300"><span>Foul Points:</span> <span
-                                                x-text="(match.scoreBreakdown.blue.foulPoints !== null) ? match.scoreBreakdown.blue.foulPoints : '—'"></span>
-                                        </div>
-                                        <div class="flex justify-between text-white border-t border-blue-500/20 pt-1">
-                                            <span>Total Score:</span> <span x-text="match.scoreBlueFinal"></span>
-                                        </div>
-                                    </div>
-                                </template>
-                                <template x-if="!match.scoreBreakdown">
-                                    <span class="no-api-text text-[9px] text-slate-500 mt-1">No scores yet</span>
-                                </template>
-                            </div>
+                        <div class="flex items-center gap-2">
+                            <svg class="h-4 w-4 transition-transform duration-200"
+                                :class="expandedReports.includes(entry.id) ? 'rotate-180' : ''" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
                         </div>
                     </div>
 
-                    <!-- Scouted Data (Bottom) -->
-                    <div class="scout-section">
-                        <h4 class="scout-section__title">Scouting Reports</h4>
-                        <div class="stack-spacing--4">
-                            <template
-                                x-for="entry in scoutEntries[match.eventKey + '_' + match.type + '_' + match.matchNumber] || []"
-                                :key="entry.id">
-                                <div class="scout-report">
-                                    <!-- Expandable Summary Header -->
-                                    <div @click="toggleReport(entry.id)" class="scout-report__summary-header">
-                                        <div class="scout-report__summary-left">
-                                            <div class="flex flex-col">
-                                                <div class="flex items-center gap-1.5">
-                                                    <div class="scout-report__team-badge--sm"
-                                                        x-text="'#' + entry.teamNumber"></div>
-                                                    <span
-                                                        class="text-[10px] font-black text-slate-300 truncate max-w-[80px]"
-                                                        x-text="getTeamData(entry.teamNumber).nickname || ''"></span>
-                                                    <template x-if="entry.meta?.isTestData">
-                                                        <span
-                                                            class="text-[9px] font-black px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 uppercase tracking-widest">TEST</span>
-                                                    </template>
-                                                </div>
-                                                <div class="scout-report__scouter-inline">
-                                                    <span class="scout-report__scouter-team-text"
-                                                        x-text="'Scouted by #' + (entry.meta?.scouterTeam || entry.meta?.scouterTeamNumber || '?')"></span>
-                                                    <span
-                                                        class="text-[9px] text-slate-500 font-bold ml-1 truncate max-w-[80px]"
-                                                        x-text="getTeamData(entry.meta?.scouterTeam || entry.meta?.scouterTeamNumber).nickname"></span>
-                                                    <template x-if="isVerified(entry.meta?.scouterRole)">
-                                                        <div class="scout-report__verified-tick">
-                                                            <svg class="h-3 w-3" fill="none" stroke="currentColor"
-                                                                viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                                    stroke-width="3" d="M5 13l4 4L19 7"></path>
-                                                            </svg>
-                                                        </div>
-                                                    </template>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="flex items-center gap-2">
-                                            <svg class="h-4 w-4 transition-transform duration-200"
-                                                :class="expandedReports.includes(entry.id) ? 'rotate-180' : ''"
-                                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M19 9l-7 7-7-7"></path>
-                                            </svg>
-                                        </div>
+                    <!-- Expanded Details -->
+                    <div x-show="expandedReports.includes(entry.id)"
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 -translate-y-2"
+                        x-transition:enter-end="opacity-100 translate-y-0" class="scout-report__details">
+
+                        <!-- Metadata bar -->
+                        <div class="scout-report__metadata-bar">
+                            <span class="scout-report__timestamp" x-text="formatDate(entry.createdAt)"></span>
+                            <span class="scout-report__alliance-tag"
+                                :class="(entry.meta?.alliance) === 'Red' ? 'text-red-400' : 'text-blue-400'"
+                                x-text="((entry.meta?.alliance) || 'Unknown') + ' Alliance'"></span>
+                        </div>
+
+                        <!-- Data Grid: Auto / Teleop / Endgame -->
+                        <div class="grid grid-cols-3 gap-2 p-3">
+                            <!-- AUTO -->
+                            <div class="bg-slate-800/60 rounded-lg p-2.5 ring-1 ring-green-500/20">
+                                <div class="flex items-center gap-1.5 mb-2">
+                                    <div class="w-1.5 h-1.5 rounded-full bg-green-400"></div>
+                                    <span
+                                        class="text-[10px] font-bold text-green-400 uppercase tracking-wider">Auto</span>
+                                </div>
+                                <div class="space-y-1">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-[10px] text-slate-400">Auto Scored</span>
+                                        <span
+                                            class="text-[10px] font-semibold text-slate-200 bg-slate-700 px-1.5 py-0.5 rounded"
+                                            x-text="entry.data?.auto?.scored || '0'"></span>
                                     </div>
-
-                                    <!-- Expanded Details -->
-                                    <div x-show="expandedReports.includes(entry.id)"
-                                        x-transition:enter="transition ease-out duration-200"
-                                        x-transition:enter-start="opacity-0 -translate-y-2"
-                                        x-transition:enter-end="opacity-100 translate-y-0"
-                                        class="scout-report__details">
-
-                                        <!-- Metadata bar -->
-                                        <div class="scout-report__metadata-bar">
-                                            <span class="scout-report__timestamp"
-                                                x-text="formatDate(entry.createdAt)"></span>
-                                            <span class="scout-report__alliance-tag"
-                                                :class="(entry.meta?.alliance) === 'Red' ? 'text-red-400' : 'text-blue-400'"
-                                                x-text="((entry.meta?.alliance) || 'Unknown') + ' Alliance'"></span>
-                                        </div>
-
-                                        <!-- Data Grid: Auto / Teleop / Endgame -->
-                                        <div class="grid grid-cols-3 gap-2 p-3">
-                                            <!-- AUTO -->
-                                            <div class="bg-slate-800/60 rounded-lg p-2.5 ring-1 ring-green-500/20">
-                                                <div class="flex items-center gap-1.5 mb-2">
-                                                    <div class="w-1.5 h-1.5 rounded-full bg-green-400"></div>
-                                                    <span
-                                                        class="text-[10px] font-bold text-green-400 uppercase tracking-wider">Auto</span>
-                                                </div>
-                                                <div class="space-y-1">
-                                                    <div class="flex justify-between items-center">
-                                                        <span class="text-[10px] text-slate-400">Auto Scored</span>
-                                                        <span
-                                                            class="text-[10px] font-semibold text-slate-200 bg-slate-700 px-1.5 py-0.5 rounded"
-                                                            x-text="entry.data?.auto?.scored || '0'"></span>
-                                                    </div>
-                                                    <div class="flex justify-between items-center">
-                                                        <span class="text-[10px] text-slate-400 text-red-400/80">Auto
-                                                            Failed</span>
-                                                        <span
-                                                            class="text-[10px] font-semibold text-red-300 bg-red-500/10 px-1.5 py-0.5 rounded"
-                                                            x-text="entry.data?.auto?.failed || '0'"></span>
-                                                    </div>
-                                                    <div class="flex justify-between items-center">
-                                                        <span class="text-[10px] text-slate-400">Auto Climb</span>
-                                                        <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded"
-                                                            :class="(entry.data?.auto?.level1) === 'success' ? 'bg-green-500/20 text-green-400' : ((entry.data?.auto?.level1) === 'failed' ? 'bg-red-500/20 text-red-400' : 'bg-slate-700 text-slate-500')"
-                                                            x-text="(entry.data?.auto?.level1) === 'success' ? 'Scored' : ((entry.data?.auto?.level1) === 'failed' ? 'Failed' : 'N/A')"></span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- TELEOP -->
-                                            <div class="bg-slate-800/60 rounded-lg p-2.5 ring-1 ring-blue-500/20">
-                                                <div class="flex items-center gap-1.5 mb-2">
-                                                    <div class="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
-                                                    <span
-                                                        class="text-[10px] font-bold text-blue-400 uppercase tracking-wider">Teleop</span>
-                                                </div>
-                                                <div class="space-y-1">
-                                                    <div class="flex justify-between items-center">
-                                                        <span class="text-[10px] text-slate-400">Transition</span>
-                                                        <span
-                                                            class="text-[10px] font-semibold text-slate-200 bg-slate-700 px-1.5 py-0.5 rounded"
-                                                            x-text="entry.data?.transitionShift || '0'"></span>
-                                                    </div>
-                                                    <div class="flex justify-between items-center">
-                                                        <span class="text-[10px] text-slate-400">Shift A</span>
-                                                        <span
-                                                            class="text-[10px] font-semibold text-slate-200 bg-slate-700 px-1.5 py-0.5 rounded"
-                                                            x-text="entry.data?.teleopShiftA || '0'"></span>
-                                                    </div>
-                                                    <div class="flex justify-between items-center">
-                                                        <span class="text-[10px] text-slate-400">Shift B</span>
-                                                        <span
-                                                            class="text-[10px] font-semibold text-slate-200 bg-slate-700 px-1.5 py-0.5 rounded"
-                                                            x-text="entry.data?.teleopShiftB || '0'"></span>
-                                                    </div>
-                                                    <div
-                                                        class="flex justify-between items-center border-t border-blue-500/10 pt-1 mt-1">
-                                                        <span
-                                                            class="text-[9px] text-blue-400 font-bold uppercase">Shooter
-                                                            Speed</span>
-                                                        <span class="text-[10px] font-black text-blue-300"
-                                                            x-text="(entry.data?.ratings?.shooterSpeed || 3) + '/5'"></span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- ENDGAME -->
-                                            <div class="bg-slate-800/60 rounded-lg p-2.5 ring-1 ring-orange-500/20">
-                                                <div class="flex items-center gap-1.5 mb-2">
-                                                    <div class="w-1.5 h-1.5 rounded-full bg-orange-400"></div>
-                                                    <span
-                                                        class="text-[10px] font-bold text-orange-400 uppercase tracking-wider">Endgame</span>
-                                                </div>
-                                                <div class="space-y-1">
-                                                    <div class="flex justify-between items-center">
-                                                        <span class="text-[10px] text-slate-400">Climb</span>
-                                                        <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded"
-                                                            :class="(() => { const lv = entry.data?.endgame?.level; return (!lv || lv === 'none') ? 'bg-slate-700 text-slate-500' : lv === 'failed' ? 'bg-red-500/20 text-red-400' : 'bg-orange-500/20 text-orange-400'; })()"
-                                                            x-text="(() => { const lv = entry.data?.endgame?.level; if (!lv || lv === 'none') return 'None'; if (lv === 'level1') return 'L1'; if (lv === 'level2') return 'L2'; if (lv === 'level3') return 'L3'; if (lv === 'failed') return 'Failed'; return lv; })()"></span>
-                                                    </div>
-                                                    <div class="flex justify-between items-center">
-                                                        <span class="text-[10px] text-slate-400">Endgame Shift</span>
-                                                        <span
-                                                            class="text-[10px] font-semibold text-slate-200 bg-slate-700 px-1.5 py-0.5 rounded"
-                                                            x-text="entry.data?.endgameShift || '0'"></span>
-                                                    </div>
-                                                    <div class="flex justify-between items-center"
-                                                        x-show="entry.data?.endgame?.climbTime">
-                                                        <span class="text-[10px] text-slate-400">Time</span>
-                                                        <span class="text-[10px] font-semibold text-orange-400"
-                                                            x-text="entry.data.endgame.climbTime + 's'"></span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- PHOTOS (If available) -->
-                                        <template x-if="entry.data?.images && entry.data?.images.length > 0">
-                                            <div class="px-3 pb-3">
-                                                <span
-                                                    class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 block">Robot
-                                                    Photos</span>
-                                                <div class="flex flex-wrap gap-2">
-                                                    <template x-for="imgUrl in entry.data.images">
-                                                        <a :href="imgUrl" target="_blank"
-                                                            class="block w-16 h-16 rounded border border-slate-700 overflow-hidden bg-slate-900">
-                                                            <img :src="imgUrl"
-                                                                class="w-full h-full object-cover hover:scale-110 transition-transform">
-                                                        </a>
-                                                    </template>
-                                                </div>
-                                            </div>
-                                        </template>
-
-                                        <!-- RATINGS -->
-                                        <div class="px-3 pb-3">
-                                            <div class="bg-slate-800/40 rounded-lg p-3 ring-1 ring-purple-500/20">
-                                                <div class="flex items-center gap-1.5 mb-2">
-                                                    <div class="w-1.5 h-1.5 rounded-full bg-purple-400"></div>
-                                                    <span
-                                                        class="text-[10px] font-bold text-purple-400 uppercase tracking-wider">Ratings</span>
-                                                </div>
-                                                <div class="grid grid-cols-2 gap-x-4 gap-y-1.5">
-                                                    <template
-                                                        x-for="(label, key) in { driver: 'Driver', speed: 'Speed', defense: 'Defense', stability: 'Stability' }">
-                                                        <div class="flex items-center gap-1.5">
-                                                            <span class="text-[10px] text-slate-400 w-14 shrink-0"
-                                                                x-text="label"></span>
-                                                            <div class="flex gap-0.5">
-                                                                <template x-for="star in [1,2,3,4,5]">
-                                                                    <div class="w-2.5 h-2.5 rounded-sm"
-                                                                        :class="star <= (entry.data?.ratings?.[key] || 0) ? 'bg-orange-400' : 'bg-slate-600'">
-                                                                    </div>
-                                                                </template>
-                                                            </div>
-                                                            <span class="text-[10px] text-slate-400"
-                                                                x-text="(entry.data?.ratings?.[key] || 0) + '/5'"></span>
-                                                        </div>
-                                                    </template>
-                                                </div>
-                                                <div class="mt-2 pt-2 border-t border-slate-700/40"
-                                                    x-show="entry.data?.ratings?.comments">
-                                                    <p class="text-[10px] text-slate-300 italic"
-                                                        x-text="'&quot;' + entry.data.ratings.comments + '&quot;'"></p>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Footer: Pit Report link -->
-                                        <div class="px-3 pb-3 flex justify-end">
-                                            <button @click.stop="location.href='teams.html?team=' + entry.teamNumber"
-                                                class="text-[10px] font-bold text-orange-400 hover:text-orange-300 bg-orange-500/10 hover:bg-orange-500/20 px-2.5 py-1 rounded-full transition-colors flex items-center gap-1">
-                                                <svg class="w-3 h-3" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                                                </svg>
-                                                Pit Report
-                                            </button>
-                                        </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-[10px] text-slate-400 text-red-400/80">Auto
+                                            Failed</span>
+                                        <span
+                                            class="text-[10px] font-semibold text-red-300 bg-red-500/10 px-1.5 py-0.5 rounded"
+                                            x-text="entry.data?.auto?.failed || '0'"></span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-[10px] text-slate-400">Auto Climb</span>
+                                        <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded"
+                                            :class="(entry.data?.auto?.level1) === 'success' ? 'bg-green-500/20 text-green-400' : ((entry.data?.auto?.level1) === 'failed' ? 'bg-red-500/20 text-red-400' : 'bg-slate-700 text-slate-500')"
+                                            x-text="(entry.data?.auto?.level1) === 'success' ? 'Scored' : ((entry.data?.auto?.level1) === 'failed' ? 'Failed' : 'N/A')"></span>
                                     </div>
                                 </div>
-                            </template>
-                            <template
-                                x-if="!(scoutEntries[match.eventKey + '_' + match.type + '_' + match.matchNumber]?.length)">
-                                <div class="empty-scout">
-                                    <p class="empty-scout__text">No scouting reports available for this match</p>
+                            </div>
+
+                            <!-- TELEOP -->
+                            <div class="bg-slate-800/60 rounded-lg p-2.5 ring-1 ring-blue-500/20">
+                                <div class="flex items-center gap-1.5 mb-2">
+                                    <div class="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
+                                    <span
+                                        class="text-[10px] font-bold text-blue-400 uppercase tracking-wider">Teleop</span>
                                 </div>
-                            </template>
+                                <div class="space-y-1">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-[10px] text-slate-400">Transition</span>
+                                        <span
+                                            class="text-[10px] font-semibold text-slate-200 bg-slate-700 px-1.5 py-0.5 rounded"
+                                            x-text="entry.data?.transitionShift || '0'"></span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-[10px] text-slate-400">Shift A</span>
+                                        <span
+                                            class="text-[10px] font-semibold text-slate-200 bg-slate-700 px-1.5 py-0.5 rounded"
+                                            x-text="entry.data?.teleopShiftA || '0'"></span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-[10px] text-slate-400">Shift B</span>
+                                        <span
+                                            class="text-[10px] font-semibold text-slate-200 bg-slate-700 px-1.5 py-0.5 rounded"
+                                            x-text="entry.data?.teleopShiftB || '0'"></span>
+                                    </div>
+                                    <div
+                                        class="flex justify-between items-center border-t border-blue-500/10 pt-1 mt-1">
+                                        <span class="text-[9px] text-blue-400 font-bold uppercase">Shooter
+                                            Speed</span>
+                                        <span class="text-[10px] font-black text-blue-300"
+                                            x-text="(entry.data?.ratings?.shooterSpeed || 3) + '/5'"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ENDGAME -->
+                            <div class="bg-slate-800/60 rounded-lg p-2.5 ring-1 ring-orange-500/20">
+                                <div class="flex items-center gap-1.5 mb-2">
+                                    <div class="w-1.5 h-1.5 rounded-full bg-orange-400"></div>
+                                    <span
+                                        class="text-[10px] font-bold text-orange-400 uppercase tracking-wider">Endgame</span>
+                                </div>
+                                <div class="space-y-1">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-[10px] text-slate-400">Climb</span>
+                                        <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded"
+                                            :class="(() => { const lv = entry.data?.endgame?.level; return (!lv || lv === 'none') ? 'bg-slate-700 text-slate-500' : lv === 'failed' ? 'bg-red-500/20 text-red-400' : 'bg-orange-500/20 text-orange-400'; })()"
+                                            x-text="(() => { const lv = entry.data?.endgame?.level; if (!lv || lv === 'none') return 'None'; if (lv === 'level1') return 'L1'; if (lv === 'level2') return 'L2'; if (lv === 'level3') return 'L3'; if (lv === 'failed') return 'Failed'; return lv; })()"></span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-[10px] text-slate-400">Endgame Shift</span>
+                                        <span
+                                            class="text-[10px] font-semibold text-slate-200 bg-slate-700 px-1.5 py-0.5 rounded"
+                                            x-text="entry.data?.endgameShift || '0'"></span>
+                                    </div>
+                                    <div class="flex justify-between items-center"
+                                        x-show="entry.data?.endgame?.climbTime">
+                                        <span class="text-[10px] text-slate-400">Time</span>
+                                        <span class="text-[10px] font-semibold text-orange-400"
+                                            x-text="entry.data.endgame.climbTime + 's'"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PHOTOS (If available) -->
+                        <template x-if="entry.data?.images && entry.data?.images.length > 0">
+                            <div class="px-3 pb-3">
+                                <span
+                                    class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 block">Robot
+                                    Photos</span>
+                                <div class="flex flex-wrap gap-2">
+                                    <template x-for="imgUrl in entry.data.images">
+                                        <a :href="imgUrl" target="_blank"
+                                            class="block w-16 h-16 rounded border border-slate-700 overflow-hidden bg-slate-900">
+                                            <img :src="imgUrl"
+                                                class="w-full h-full object-cover hover:scale-110 transition-transform">
+                                        </a>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- RATINGS -->
+                        <div class="px-3 pb-3">
+                            <div class="bg-slate-800/40 rounded-lg p-3 ring-1 ring-purple-500/20">
+                                <div class="flex items-center gap-1.5 mb-2">
+                                    <div class="w-1.5 h-1.5 rounded-full bg-purple-400"></div>
+                                    <span
+                                        class="text-[10px] font-bold text-purple-400 uppercase tracking-wider">Ratings</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-x-4 gap-y-1.5">
+                                    <template
+                                        x-for="(label, key) in { driver: 'Driver', speed: 'Speed', defense: 'Defense', stability: 'Stability' }">
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="text-[10px] text-slate-400 w-14 shrink-0"
+                                                x-text="label"></span>
+                                            <div class="flex gap-0.5">
+                                                <template x-for="star in [1,2,3,4,5]">
+                                                    <div class="w-2.5 h-2.5 rounded-sm"
+                                                        :class="star <= (entry.data?.ratings?.[key] || 0) ? 'bg-orange-400' : 'bg-slate-600'">
+                                                    </div>
+                                                </template>
+                                            </div>
+                                            <span class="text-[10px] text-slate-400"
+                                                x-text="(entry.data?.ratings?.[key] || 0) + '/5'"></span>
+                                        </div>
+                                    </template>
+                                </div>
+                                <div class="mt-2 pt-2 border-t border-slate-700/40"
+                                    x-show="entry.data?.ratings?.comments">
+                                    <p class="text-[10px] text-slate-300 italic"
+                                        x-text="'&quot;' + entry.data.ratings.comments + '&quot;'"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer: Pit Report link -->
+                        <div class="px-3 pb-3 flex justify-end">
+                            <button @click.stop="location.href='teams.html?team=' + entry.teamNumber"
+                                class="text-[10px] font-bold text-orange-400 hover:text-orange-300 bg-orange-500/10 hover:bg-orange-500/20 px-2.5 py-1 rounded-full transition-colors flex items-center gap-1">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                </svg>
+                                Pit Report
+                            </button>
                         </div>
                     </div>
                 </div>
-            </div>
-        </template>
+            </template>
+            <template x-if="!(scoutEntries[match.eventKey + '_' + match.type + '_' + match.matchNumber]?.length)">
+                <div class="empty-scout">
+                    <p class="empty-scout__text">No scouting reports available for this match</p>
+                </div>
+            </template>
+        </div>
+    </div>
+    </div>
+    </div>
+    </template>
     </div>
 
     <!-- Your Application Logic -->

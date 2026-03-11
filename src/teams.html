@@ -342,6 +342,17 @@
                                             </template>
                                         </div>
                                         <div class="px-4 pb-4 flex justify-end gap-2">
+                                            <!-- ALWAYS VISIBLE SCOUT BUTTON -->
+                                            <button @click.stop="location.href='pit-scout.html?team=' + team.teamNumber"
+                                                class="text-[10px] font-bold text-white bg-orange-600 hover:bg-orange-500 px-3 py-1 rounded-full transition-all flex items-center gap-1 shadow-md shadow-orange-900/20">
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="3" d="M12 4v16m8-8H4"></path>
+                                                </svg>
+                                                Scout This Team
+                                            </button>
+
                                             <button @click.stop="location.href='matches.html?team=' + team.teamNumber"
                                                 class="text-[10px] font-bold text-orange-400 hover:text-orange-300 bg-orange-500/10 hover:bg-orange-500/20 px-2.5 py-1 rounded-full transition-colors flex items-center gap-1">
                                                 <svg class="w-3 h-3" fill="none" stroke="currentColor"
@@ -360,11 +371,7 @@
             <template x-if="!(pitReports[team.teamNumber]?.length)">
                 <div
                     class="flex flex-col items-center justify-center py-6 bg-slate-900/40 rounded-xl border border-dashed border-slate-800">
-                    <p class="text-xs text-slate-500 italic pb-3">No Pit Scouting reports for this
-                        team</p>
-                    <button @click="location.href='pit-scout.html?team=' + team.teamNumber"
-                        class="btn-primary--sm">Scout
-                        This Team</button>
+                    <p class="text-xs text-slate-500 italic">No Pit Scouting reports for this team yet</p>
                 </div>
             </template>
         </div>

@@ -136,20 +136,16 @@ async function fetchFRCMatches(eventKey) {
             // Normalized breakdown — always present if match was scored
             scoreBreakdown: match.score_breakdown ? {
                 red: {
-                    autoPoints: match.score_breakdown.red?.autoPoints ?? match.score_breakdown.red?.autoTotal ?? null,
-                    autoLeavePoints: match.score_breakdown.red?.autoLeavePoints ?? 0,
-                    teleopPoints: match.score_breakdown.red?.teleopPoints ?? match.score_breakdown.red?.teleopTotal ?? null,
-                    endGamePoints: match.score_breakdown.red?.endGamePoints ?? match.score_breakdown.red?.endGameTotal ?? null,
-                    endGameClimbPoints: match.score_breakdown.red?.endGameClimbPoints ?? 0,
-                    foulPoints: match.score_breakdown.red?.foulPoints ?? 0,
+                    autoPoints: match.score_breakdown.red?.autoPoints || 0,
+                    fuelPoints: (match.score_breakdown.red?.autoFuelPoints || 0) + (match.score_breakdown.red?.teleopFuelPoints || 0),
+                    climbPoints: match.score_breakdown.red?.towerPoints || 0,
+                    foulPoints: match.score_breakdown.red?.foulPoints || 0,
                 },
                 blue: {
-                    autoPoints: match.score_breakdown.blue?.autoPoints ?? match.score_breakdown.blue?.autoTotal ?? null,
-                    autoLeavePoints: match.score_breakdown.blue?.autoLeavePoints ?? 0,
-                    teleopPoints: match.score_breakdown.blue?.teleopPoints ?? match.score_breakdown.blue?.teleopTotal ?? null,
-                    endGamePoints: match.score_breakdown.blue?.endGamePoints ?? match.score_breakdown.blue?.endGameTotal ?? null,
-                    endGameClimbPoints: match.score_breakdown.blue?.endGameClimbPoints ?? 0,
-                    foulPoints: match.score_breakdown.blue?.foulPoints ?? 0,
+                    autoPoints: match.score_breakdown.blue?.autoPoints || 0,
+                    fuelPoints: (match.score_breakdown.blue?.autoFuelPoints || 0) + (match.score_breakdown.blue?.teleopFuelPoints || 0),
+                    climbPoints: match.score_breakdown.blue?.towerPoints || 0,
+                    foulPoints: match.score_breakdown.blue?.foulPoints || 0,
                 }
             } : null,
             teams: [...redTeams, ...blueTeams]
