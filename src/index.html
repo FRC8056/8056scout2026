@@ -14,6 +14,11 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
   <!-- Alpine.js -->
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <style>
+    [x-cloak] {
+      display: none !important;
+    }
+  </style>
 </head>
 
 <body class="page-body--centered" x-data="loginApp">
@@ -67,69 +72,77 @@
     </div>
 
     <!-- App Information Section -->
-    <div x-data="{ showInfo: false }" class="mt-8 border-t border-slate-800/50 pt-6">
+    <div x-data="{ showInfo: false }" class="mt-12 w-full max-w-2xl">
       <button @click="showInfo = !showInfo"
-        class="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-orange-500/30 transition-all group">
-        <span
-          class="text-[10px] font-black uppercase tracking-widest text-slate-400 group-hover:text-orange-500 transition-colors">App
-          Information</span>
-        <svg class="w-4 h-4 text-slate-500 transition-transform duration-300" :class="showInfo ? 'rotate-180' : ''"
+        class="w-full h-14 flex items-center justify-between px-6 rounded-2xl bg-slate-900 border border-slate-800 hover:border-orange-500/50 transition-all group shadow-xl">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center">
+            <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <span
+            class="text-xs font-black uppercase tracking-widest text-slate-300 group-hover:text-orange-500 transition-colors">View
+            App Information & Guide</span>
+        </div>
+        <svg class="w-5 h-5 text-slate-500 transition-transform duration-500" :class="showInfo ? 'rotate-180' : ''"
           fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
       </button>
 
-      <div x-show="showInfo" x-collapse x-cloak class="mt-4 space-y-4 px-2">
-        <!-- usage guide -->
-        <div class="space-y-4">
-          <div class="p-4 rounded-xl bg-orange-500/5 border border-orange-500/10">
-            <h3 class="text-[10px] font-black uppercase text-orange-500 tracking-wider mb-2">Quick Start Guide</h3>
-            <div class="space-y-3">
-              <div>
-                <p class="text-[11px] font-bold text-slate-300">Match Scouting</p>
-                <p class="text-[10px] text-slate-500 leading-relaxed">Enter match/team numbers on the Scout page to
-                  record performance during Auto, Teleop, and Endgame.</p>
-              </div>
-              <div>
-                <p class="text-[11px] font-bold text-slate-300">Pit Scouting</p>
-                <p class="text-[10px] text-slate-500 leading-relaxed">Record technical robot data in the pits to help
-                  identify alliance partners and strategy.</p>
-              </div>
+      <div x-show="showInfo" x-collapse x-cloak class="mt-6 space-y-6">
+        <!-- Quick Start Guide -->
+        <div class="card p-6 border-l-4 border-orange-500">
+          <h3 class="text-xs font-black uppercase text-orange-500 tracking-widest mb-4">Quick Start Guide</h3>
+          <div class="space-y-4">
+            <div>
+              <p class="text-[11px] font-black text-white uppercase tracking-wider">Match Scouting</p>
+              <p class="text-xs text-slate-400 leading-relaxed mt-1">Navigate to the Scout page from the dashboard.
+                Enter match/team numbers to record robot performance during Auto, Teleop, and Endgame.</p>
+            </div>
+            <div>
+              <p class="text-[11px] font-black text-white uppercase tracking-wider">Pit Scouting</p>
+              <p class="text-xs text-slate-400 leading-relaxed mt-1">Use the Pit Scout feature to record technical data
+                about a robot in the pits. Invaluable for strategy planning.</p>
             </div>
           </div>
+        </div>
 
-          <div class="p-4 rounded-xl bg-blue-500/5 border border-blue-500/10">
-            <h3 class="text-[10px] font-black uppercase text-blue-500 tracking-wider mb-2">Pro Tips</h3>
-            <ul class="space-y-2 text-[10px] text-slate-500">
-              <li class="flex gap-2">
-                <div class="mt-1 w-1 h-1 rounded-full bg-blue-500 shrink-0"></div>
-                <span>Searching a team highlights their matches worldwide.</span>
-              </li>
-              <li class="flex gap-2">
-                <div class="mt-1 w-1 h-1 rounded-full bg-blue-500 shrink-0"></div>
-                <span>Look for the blue tick for verified scout reports.</span>
-              </li>
-            </ul>
-          </div>
+        <!-- Pro Tips -->
+        <div class="card p-6 border-l-4 border-blue-500">
+          <h3 class="text-xs font-black uppercase text-blue-500 tracking-widest mb-4">Pro Tips</h3>
+          <ul class="space-y-3 text-xs text-slate-400">
+            <li class="flex gap-3">
+              <div class="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></div>
+              <span>Searching for a team on the Teams page highlights their matches globally.</span>
+            </li>
+            <li class="flex gap-3">
+              <div class="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></div>
+              <span>Check for the blue checkmark to identify verified team members.</span>
+            </li>
+          </ul>
+        </div>
 
-          <div class="p-4 rounded-xl bg-green-500/5 border border-green-500/10">
-            <h3 class="text-[10px] font-black uppercase text-green-500 tracking-wider mb-2">Additional Info</h3>
-            <div class="space-y-3">
-              <div>
-                <p class="text-[11px] font-bold text-slate-300">Authentication Policy</p>
-                <p class="text-[10px] text-slate-500 leading-relaxed">Verification requires a weekly secret code. Reach
-                  out to 8056 Laissez Faire members for access.</p>
-              </div>
-              <div>
-                <p class="text-[11px] font-bold text-slate-300">Data Security</p>
-                <p class="text-[10px] text-slate-500 leading-relaxed">All data (excluding passwords) is visible to
-                  admins for verification and editing.</p>
-              </div>
-              <div>
-                <p class="text-[11px] font-bold text-slate-300">Laissez Faire 8056</p>
-                <p class="text-[10px] text-slate-500 leading-relaxed">Independent FRC team from İzmir, Türkiye. Founded
-                  in 2020. Motto: "Let Them Do It".</p>
-              </div>
+        <!-- Additional Information -->
+        <div class="card p-6 border-l-4 border-green-500">
+          <h3 class="text-xs font-black uppercase text-green-500 tracking-widest mb-4">Additional Information</h3>
+          <div class="space-y-4">
+            <div>
+              <p class="text-[11px] font-black text-white uppercase tracking-wider">Authentication Policy</p>
+              <p class="text-xs text-slate-400 leading-relaxed mt-1">Verification requires a weekly secret code. Reach
+                out to 8056 Laissez Faire members for access.</p>
+            </div>
+            <div>
+              <p class="text-[11px] font-black text-white uppercase tracking-wider">Data Security</p>
+              <p class="text-xs text-slate-400 leading-relaxed mt-1">All data (excluding passwords) is visible to admins
+                for verification and editing.</p>
+            </div>
+            <div>
+              <p class="text-[11px] font-black text-white uppercase tracking-wider">Laissez Faire 8056</p>
+              <p class="text-xs text-slate-400 leading-relaxed mt-1">First independent FRC team in İzmir, Türkiye.
+                Founded in 2020. Motto: "Let Them Do It".</p>
             </div>
           </div>
         </div>
