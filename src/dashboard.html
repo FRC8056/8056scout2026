@@ -168,17 +168,21 @@
       </div>
       <!-- Statistics & Analytics -->
       <button @click="location.href='statistics.html'"
-        class="dashboard-card--blue bg-indigo-500/5 border-indigo-500/20">
-        <div class="dashboard-card__icon--blue bg-indigo-500/10">
-          <svg class="h-6 w-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-              d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-          </svg>
-        </div>
-        <h2 class="dashboard-card__title">Statistics & Analytics</h2>
-        <p class="dashboard-card__desc">System-wide performance and leaderboards</p>
-        <div class="dashboard-card__link--blue text-indigo-400">
-          View Insights <svg class="icon-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        class="dashboard-card--admin bg-slate-800/40 border-slate-700/50">
+        <div class="dashboard-card__admin-inner">
+          <div class="dashboard-card__admin-content">
+            <div class="dashboard-card__icon--admin bg-orange-500/10">
+              <svg class="h-6 w-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                  d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+            </div>
+            <div>
+              <h2 class="dashboard-card__title">Statistics & Analytics</h2>
+              <p class="dashboard-card__desc">System-wide performance and leaderboards</p>
+            </div>
+          </div>
+          <svg class="icon-arrow--admin text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
           </svg>
         </div>

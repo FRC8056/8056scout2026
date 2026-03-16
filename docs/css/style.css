@@ -776,12 +776,6 @@
   .border-green-500 {
     border-color: var(--color-green-500);
   }
-  .border-indigo-500\/20 {
-    border-color: color-mix(in srgb, oklch(58.5% 0.233 277.117) 20%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--color-indigo-500) 20%, transparent);
-    }
-  }
   .border-orange-500 {
     border-color: var(--color-orange-500);
   }
@@ -885,18 +879,6 @@
     background-color: color-mix(in srgb, oklch(72.3% 0.219 149.579) 20%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
       background-color: color-mix(in oklab, var(--color-green-500) 20%, transparent);
-    }
-  }
-  .bg-indigo-500\/5 {
-    background-color: color-mix(in srgb, oklch(58.5% 0.233 277.117) 5%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-indigo-500) 5%, transparent);
-    }
-  }
-  .bg-indigo-500\/10 {
-    background-color: color-mix(in srgb, oklch(58.5% 0.233 277.117) 10%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-indigo-500) 10%, transparent);
     }
   }
   .bg-orange-400 {
@@ -1285,9 +1267,6 @@
   }
   .text-green-500 {
     color: var(--color-green-500);
-  }
-  .text-indigo-400 {
-    color: var(--color-indigo-400);
   }
   .text-orange-400 {
     color: var(--color-orange-400);

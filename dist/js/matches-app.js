@@ -36,8 +36,6 @@ document.addEventListener('alpine:init', () => {
                 });
 
 
-                await this.fetchMatches();
-
                 db.collection('scouting').onSnapshot(snapshot => {
                     this.scoutEntries = {};
                     snapshot.forEach(doc => {
@@ -60,6 +58,10 @@ document.addEventListener('alpine:init', () => {
                             return dateB - dateA;
                         });
                     });
+
+                    // Pull API data for all events that have scouted matches
+                    this.fetchMatches();
+
                     this.loading = false;
                 }, err => {
                     this.errorMessage = 'Firestore connection failed';
