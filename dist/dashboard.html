@@ -166,118 +166,24 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4 4H3"></path>
         </svg>
       </div>
-    </button>
+      <!-- Statistics & Analytics -->
+      <button @click="location.href='statistics.html'"
+        class="dashboard-card--blue bg-indigo-500/5 border-indigo-500/20">
+        <div class="dashboard-card__icon--blue bg-indigo-500/10">
+          <svg class="h-6 w-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+              d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+          </svg>
+        </div>
+        <h2 class="dashboard-card__title">Statistics & Analytics</h2>
+        <p class="dashboard-card__desc">System-wide performance and leaderboards</p>
+        <div class="dashboard-card__link--blue text-indigo-400">
+          View Insights <svg class="icon-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </div>
+      </button>
   </main>
-
-  <!-- App Statistics Section -->
-  <section class="max-w-4xl mx-auto px-4 mt-12 mb-20" x-show="!loadingStats">
-    <div class="flex items-center gap-4 mb-8">
-      <div class="h-px flex-1 bg-gradient-to-r from-transparent to-slate-800"></div>
-      <h2 class="text-xs font-black uppercase tracking-[0.3em] text-orange-500 whitespace-nowrap">Team Insights & App
-        Statistics</h2>
-      <div class="h-px flex-1 bg-gradient-to-l from-transparent to-slate-800"></div>
-    </div>
-
-    <!-- Stats Grid -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-      <div class="bg-slate-900/40 border border-slate-700/30 p-4 rounded-2xl backdrop-blur-sm">
-        <span class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Scouted Matches</span>
-        <span class="text-2xl font-black text-white" x-text="stats.scoutedMatches"></span>
-      </div>
-      <div class="bg-slate-900/40 border border-slate-700/30 p-4 rounded-2xl backdrop-blur-sm">
-        <span class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Pit Reports</span>
-        <span class="text-2xl font-black text-white" x-text="stats.pitReports"></span>
-      </div>
-      <div class="bg-slate-900/40 border border-slate-700/30 p-4 rounded-2xl backdrop-blur-sm">
-        <span class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Active Scouts</span>
-        <span class="text-2xl font-black text-white" x-text="stats.totalUsers"></span>
-      </div>
-      <div class="bg-slate-900/40 border border-slate-700/30 p-4 rounded-2xl backdrop-blur-sm">
-        <span class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Total Teams</span>
-        <span class="text-2xl font-black text-white" x-text="stats.totalTeams"></span>
-      </div>
-    </div>
-
-    <!-- Leaderboards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <!-- Most Active Scouter Teams -->
-      <div class="space-y-4">
-        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-          <svg class="h-4 w-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
-          </svg>
-          Active Scouter Teams
-        </h3>
-        <div class="bg-slate-900/20 border border-white/5 rounded-2xl overflow-hidden">
-          <template x-for="(item, index) in stats.topScouterTeams" :key="item.key">
-            <div
-              class="flex items-center justify-between p-3 border-b border-white/5 group hover:bg-white/5 transition-colors">
-              <div class="flex items-center gap-3">
-                <span class="text-[10px] font-black text-slate-600 w-4" x-text="index + 1"></span>
-                <span class="text-[11px] font-black text-slate-200" x-text="'Team ' + item.key"></span>
-              </div>
-              <span class="text-[10px] font-black text-orange-500/50 group-hover:text-orange-500"
-                x-text="item.count + ' Rpts'"></span>
-            </div>
-          </template>
-        </div>
-      </div>
-
-      <!-- Most Scouted Teams -->
-      <div class="space-y-4">
-        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-          <svg class="h-4 w-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-          </svg>
-          Top Scouted Targets
-        </h3>
-        <div class="bg-slate-900/20 border border-white/5 rounded-2xl overflow-hidden">
-          <template x-for="(item, index) in stats.topScoutedTeams" :key="item.key">
-            <div
-              class="flex items-center justify-between p-3 border-b border-white/5 group hover:bg-white/5 transition-colors">
-              <div class="flex items-center gap-3">
-                <span class="text-[10px] font-black text-slate-600 w-4" x-text="index + 1"></span>
-                <span class="text-[11px] font-black text-slate-200" x-text="'#' + item.key"></span>
-              </div>
-              <span class="text-[10px] font-black text-orange-500/50 group-hover:text-orange-500"
-                x-text="item.count + ' Obs'"></span>
-            </div>
-          </template>
-        </div>
-      </div>
-
-      <!-- Teams with Most Users -->
-      <div class="space-y-4">
-        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-          <svg class="h-4 w-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-          </svg>
-          User Communities
-        </h3>
-        <div class="bg-slate-900/20 border border-white/5 rounded-2xl overflow-hidden">
-          <template x-for="(item, index) in stats.topUserTeams" :key="item.key">
-            <div
-              class="flex items-center justify-between p-3 border-b border-white/5 group hover:bg-white/5 transition-colors">
-              <div class="flex items-center gap-3">
-                <span class="text-[10px] font-black text-slate-600 w-4" x-text="index + 1"></span>
-                <span class="text-[11px] font-black text-slate-200" x-text="'Team ' + item.key"></span>
-              </div>
-              <span class="text-[10px] font-black text-orange-500/50 group-hover:text-orange-500"
-                x-text="item.count + ' Usrs'"></span>
-            </div>
-          </template>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Loading Stats State -->
-  <div x-show="loadingStats" class="flex flex-col items-center justify-center p-20 animate-pulse">
-    <div class="w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-    <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Generating Insights...</span>
-  </div>
   </div>
 
   <!-- Firebase -->

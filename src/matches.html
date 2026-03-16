@@ -223,37 +223,90 @@
                                             x-text="alliance + ' alliance'"></h5>
 
                                         <div class="space-y-1.5">
+                                            <div class="mb-2 pb-1 border-b border-white/5">
+                                                <span
+                                                    class="text-[8px] font-black text-slate-600 uppercase tracking-widest">Main
+                                                    Scores</span>
+                                            </div>
                                             <template x-for="item in [
-                                                { label: 'Auto Points', key: 'auto_points' },
-                                                { label: 'Auto Mode', key: 'auto' },
-                                                { label: 'Tote Points', key: 'tote_points' },
-                                                { label: 'Tote Set', key: 'tote_set' },
-                                                { label: 'Tote Stack', key: 'tote_stack' },
-                                                { label: 'Totes Near', key: 'tote_count_near' },
-                                                { label: 'Totes Far', key: 'tote_count_far' },
-                                                { label: 'Container Points', key: 'container_points' },
-                                                { label: 'Container Set', key: 'container_set' },
-                                                { label: 'L1 Containers', key: 'container_count_level1' },
-                                                { label: 'L2 Containers', key: 'container_count_level2' },
-                                                { label: 'L3 Containers', key: 'container_count_level3' },
-                                                { label: 'L4 Containers', key: 'container_count_level4' },
-                                                { label: 'L5 Containers', key: 'container_count_level5' },
-                                                { label: 'L6 Containers', key: 'container_count_level6' },
-                                                { label: 'Litter Points', key: 'litter_points' },
-                                                { label: 'Litter Container', key: 'litter_count_container' },
-                                                { label: 'Litter Landfill', key: 'litter_count_landfill' },
-                                                { label: 'Litter Unprocessed', key: 'litter_count_unprocessed' },
-                                                { label: 'Robot Set', key: 'robot_set' },
-                                                { label: 'Teleop Points', key: 'teleop_points' },
-                                                { label: 'Foul Points', key: 'foul_points' },
-                                                { label: 'Foul Count', key: 'foul_count' },
-                                                { label: 'Adjustment', key: 'adjust_points' },
-                                                { label: 'Total Score', key: 'total_points' }
-                                            ]">
+                                                { label: 'Auto Points', val: match.rawScoreBreakdown[alliance].totalAutoPoints },
+                                                { label: 'Teleop Points', val: match.rawScoreBreakdown[alliance].totalTeleopPoints },
+                                                { label: 'Tower Points', val: match.rawScoreBreakdown[alliance].totalTowerPoints },
+                                                { label: 'Foul Points', val: match.rawScoreBreakdown[alliance].foulPoints },
+                                                { label: 'Total Points', val: match.rawScoreBreakdown[alliance].totalPoints },
+                                                { label: 'RP Earned', val: match.rawScoreBreakdown[alliance].rp }
+                                            ]" :key="item.label">
                                                 <div class="flex justify-between items-center text-[9px] font-bold">
                                                     <span class="text-slate-500" x-text="item.label"></span>
                                                     <span :class="alliance === 'red' ? 'text-red-300' : 'text-blue-300'"
-                                                        x-text="(match.rawScoreBreakdown[alliance] && match.rawScoreBreakdown[alliance][item.key] !== undefined) ? match.rawScoreBreakdown[alliance][item.key] : '0'"></span>
+                                                        x-text="item.val || 0"></span>
+                                                </div>
+                                            </template>
+
+                                            <div class="mt-3 mb-2 pb-1 border-b border-white/5">
+                                                <span
+                                                    class="text-[8px] font-black text-slate-600 uppercase tracking-widest">Tower
+                                                    Robots</span>
+                                            </div>
+                                            <template x-for="robot in [1,2,3]" :key="robot">
+                                                <div
+                                                    class="flex justify-between items-center text-[9px] font-bold opacity-80">
+                                                    <span class="text-slate-500" x-text="'Auto Robot ' + robot"></span>
+                                                    <span :class="alliance === 'red' ? 'text-red-300' : 'text-blue-300'"
+                                                        x-text="match.rawScoreBreakdown[alliance]['autoTowerRobot' + robot]"></span>
+                                                </div>
+                                            </template>
+                                            <template x-for="robot in [1,2,3]" :key="robot">
+                                                <div
+                                                    class="flex justify-between items-center text-[9px] font-bold opacity-80">
+                                                    <span class="text-slate-500"
+                                                        x-text="'Endgame Robot ' + robot"></span>
+                                                    <span :class="alliance === 'red' ? 'text-red-300' : 'text-blue-300'"
+                                                        x-text="match.rawScoreBreakdown[alliance]['endGameTowerRobot' + robot]"></span>
+                                                </div>
+                                            </template>
+
+                                            <div class="mt-3 mb-2 pb-1 border-b border-white/5">
+                                                <span
+                                                    class="text-[8px] font-black text-slate-600 uppercase tracking-widest">Hub
+                                                    Activity</span>
+                                            </div>
+                                            <template x-if="match.rawScoreBreakdown[alliance].hubScore">
+                                                <div class="space-y-1">
+                                                    <template
+                                                        x-for="shift in ['Auto', 'Transition', 'Shift1', 'Shift2', 'Shift3', 'Shift4', 'Teleop', 'Endgame']"
+                                                        :key="shift">
+                                                        <div
+                                                            class="flex justify-between items-center text-[9px] font-bold">
+                                                            <span class="text-slate-500"
+                                                                x-text="shift + ' Score'"></span>
+                                                            <div class="flex gap-2">
+                                                                <span class="text-slate-600"
+                                                                    x-text="match.rawScoreBreakdown[alliance].hubScore[shift.toLowerCase() + 'Count'] || 0"></span>
+                                                                <span
+                                                                    :class="alliance === 'red' ? 'text-red-300' : 'text-blue-300'"
+                                                                    x-text="match.rawScoreBreakdown[alliance].hubScore[shift.toLowerCase() + 'Points'] || 0"></span>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </template>
+
+                                            <div class="mt-3 mb-2 pb-1 border-b border-white/5">
+                                                <span
+                                                    class="text-[8px] font-black text-slate-600 uppercase tracking-widest">Achievements</span>
+                                            </div>
+                                            <template x-for="ach in [
+                                                { label: 'Energized', val: match.rawScoreBreakdown[alliance].energizedAchieved },
+                                                { label: 'Supercharged', val: match.rawScoreBreakdown[alliance].superchargedAchieved },
+                                                { label: 'Traversal', val: match.rawScoreBreakdown[alliance].traversalAchieved },
+                                                { label: 'G206 Penalty', val: match.rawScoreBreakdown[alliance].g206Penalty }
+                                            ]" :key="ach.label">
+                                                <div class="flex justify-between items-center text-[9px] font-bold">
+                                                    <span class="text-slate-500" x-text="ach.label"></span>
+                                                    <span
+                                                        :class="ach.val ? (alliance === 'red' ? 'text-red-400' : 'text-blue-400') : 'text-slate-700'"
+                                                        x-text="ach.val ? 'YES' : 'NO'"></span>
                                                 </div>
                                             </template>
                                         </div>

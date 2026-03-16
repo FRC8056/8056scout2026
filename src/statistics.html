@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Statistics - REBUILT 2026</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/theme.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+
+<body class="page-body--padded" x-data="statisticsApp">
+    <nav class="top-nav">
+        <div class="top-nav__inner">
+            <div class="top-nav__left">
+                <button @click="location.href='dashboard.html'" class="back-btn--shadow p-2">
+                    <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="top-nav__center">
+                <img src="img/logo.png" alt="REBUILT Logo" class="brand__logo--nav">
+                <span class="brand__subtitle--orange">Analytics</span>
+            </div>
+
+            <div class="top-nav__right w-10"></div>
+        </div>
+    </nav>
+
+    <section class="page-hero">
+        <h1 class="page-hero__title">System Insights</h1>
+        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em] mt-1 -translate-y-2">Real-time data
+            aggregation</p>
+    </section>
+
+    <main class="max-w-4xl mx-auto px-4 mt-6">
+        <!-- Loading State -->
+        <div x-show="loadingStats" class="flex flex-col items-center justify-center p-20 animate-pulse">
+            <div class="w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+            <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Compiling Database...</span>
+        </div>
+
+        <div x-show="!loadingStats" x-transition.opacity>
+            <!-- High Level Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div class="bg-slate-900/40 border border-slate-700/30 p-4 rounded-2xl backdrop-blur-sm shadow-xl">
+                    <span
+                        class="block text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Reports</span>
+                    <span class="text-2xl font-black text-white"
+                        x-text="stats.scoutedMatches + stats.pitReports"></span>
+                </div>
+                <div class="bg-slate-900/40 border border-slate-700/30 p-4 rounded-2xl backdrop-blur-sm shadow-xl">
+                    <span class="block text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Users</span>
+                    <span class="text-2xl font-black text-white" x-text="stats.totalUsers"></span>
+                </div>
+                <div class="bg-slate-900/40 border border-slate-700/30 p-4 rounded-2xl backdrop-blur-sm shadow-xl">
+                    <span class="block text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Teams</span>
+                    <span class="text-2xl font-black text-white" x-text="stats.totalTeams"></span>
+                </div>
+                <div class="bg-slate-900/40 border border-slate-700/30 p-4 rounded-2xl backdrop-blur-sm shadow-xl">
+                    <span
+                        class="block text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Regionals</span>
+                    <span class="text-2xl font-black text-white" x-text="stats.totalRegionals"></span>
+                </div>
+            </div>
+
+            <!-- Leaderboards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-20">
+                <!-- Active Scouter Teams -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between border-b border-white/5 pb-2">
+                        <h3 class="text-[10px] font-black text-orange-500 uppercase tracking-widest">Most Active
+                            Scouters</h3>
+                        <span class="text-[8px] text-slate-600 font-bold uppercase">Reports Count</span>
+                    </div>
+                    <div class="space-y-2">
+                        <template x-for="(item, index) in stats.topScouterTeams" :key="item.key">
+                            <div
+                                class="flex items-center justify-between p-3 bg-slate-900/20 border border-white/5 rounded-xl group hover:bg-orange-500/5 transition-all">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-[10px] font-black text-slate-700 w-4" x-text="index + 1"></span>
+                                    <span class="text-[11px] font-black text-slate-200"
+                                        x-text="'Team ' + item.key"></span>
+                                </div>
+                                <div class="px-2 py-0.5 bg-orange-500/10 rounded-full border border-orange-500/20">
+                                    <span class="text-[9px] font-black text-orange-400" x-text="item.count"></span>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Most Scouted Teams -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between border-b border-white/5 pb-2">
+                        <h3 class="text-[10px] font-black text-orange-500 uppercase tracking-widest">Most Observed Teams
+                        </h3>
+                        <span class="text-[8px] text-slate-600 font-bold uppercase">Scout Instances</span>
+                    </div>
+                    <div class="space-y-2">
+                        <template x-for="(item, index) in stats.topScoutedTeams" :key="item.key">
+                            <div
+                                class="flex items-center justify-between p-3 bg-slate-900/20 border border-white/5 rounded-xl group hover:bg-orange-500/5 transition-all">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-[10px] font-black text-slate-700 w-4" x-text="index + 1"></span>
+                                    <span class="text-[11px] font-black text-slate-200" x-text="'#' + item.key"></span>
+                                </div>
+                                <div class="px-2 py-0.5 bg-orange-500/10 rounded-full border border-orange-500/20">
+                                    <span class="text-[9px] font-black text-orange-400" x-text="item.count"></span>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Scouter Communities -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between border-b border-white/5 pb-2">
+                        <h3 class="text-[10px] font-black text-orange-500 uppercase tracking-widest">User Communities
+                        </h3>
+                        <span class="text-[8px] text-slate-600 font-bold uppercase">Accounts</span>
+                    </div>
+                    <div class="space-y-2">
+                        <template x-for="(item, index) in stats.topUserTeams" :key="item.key">
+                            <div
+                                class="flex items-center justify-between p-3 bg-slate-900/20 border border-white/5 rounded-xl group hover:bg-orange-500/5 transition-all">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-[10px] font-black text-slate-700 w-4" x-text="index + 1"></span>
+                                    <span class="text-[11px] font-black text-slate-200"
+                                        x-text="'Team ' + item.key"></span>
+                                </div>
+                                <div class="px-2 py-0.5 bg-slate-800 rounded-full border border-white/10">
+                                    <span class="text-[9px] font-black text-slate-400" x-text="item.count"></span>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Regionals Activity -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between border-b border-white/5 pb-2">
+                        <h3 class="text-[10px] font-black text-orange-500 uppercase tracking-widest">Regional Activity
+                        </h3>
+                        <span class="text-[8px] text-slate-600 font-bold uppercase">Total Reports</span>
+                    </div>
+                    <div class="space-y-2">
+                        <template x-for="(item, index) in stats.topScoutedRegionals" :key="item.key">
+                            <div
+                                class="flex items-center justify-between p-3 bg-slate-900/20 border border-white/5 rounded-xl group hover:bg-orange-500/5 transition-all">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-[10px] font-black text-slate-700 w-4" x-text="index + 1"></span>
+                                    <span class="text-[11px] font-black text-slate-200 truncate max-w-[150px]"
+                                        x-text="item.name"></span>
+                                </div>
+                                <div class="px-2 py-0.5 bg-slate-800 rounded-full border border-white/10">
+                                    <span class="text-[9px] font-black text-slate-400" x-text="item.count"></span>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/auth.js"></script>
+    <script src="js/statistics-app.js"></script>
+    <script src="js/frc-config.js"></script>
+</body>
+
+</html>
