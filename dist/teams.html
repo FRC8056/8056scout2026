@@ -200,7 +200,16 @@
                                                 </svg>
                                             </button>
 
-                                            <div x-show="expandedHistory.includes(team.teamNumber)" x-transition
+                                            <div x-show="team.loadingDetails"
+                                                class="flex items-center gap-2 mt-2 px-2 py-1 bg-orange-500/5 rounded border border-orange-500/10 animate-pulse">
+                                                <div class="w-1.5 h-1.5 rounded-full bg-orange-500"></div>
+                                                <span
+                                                    class="text-[8px] font-black text-orange-500 uppercase tracking-widest">Loading
+                                                    honors and history...</span>
+                                            </div>
+
+                                            <div x-show="expandedHistory.includes(team.teamNumber) && !team.loadingDetails"
+                                                x-transition
                                                 class="flex flex-col gap-2 mt-2 border-t border-white/5 pt-2">
                                                 <template
                                                     x-for="event in (team.events || []).filter(e => e.year < 2025)">
@@ -234,7 +243,8 @@
                                         </svg>
                                         SCOUT TEAM
                                     </button>
-                                    <button @click.stop="location.href='matches.html?team=' + team.teamNumber"
+                                    <button
+                                        @click.stop="location.href='matches.html?team=' + team.teamNumber + '&regionals=' + (team.events || []).filter(e => selectedSeasons.includes(e.year)).map(e => e.key).join(',') + ''"
                                         class="text-[9px] font-black text-orange-400 hover:text-white bg-orange-500/5 hover:bg-orange-500 border border-orange-500/20 px-3 py-1.5 rounded transition-all flex items-center gap-1.5">
                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

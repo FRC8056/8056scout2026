@@ -93,307 +93,6 @@
       </button>
 
       <div x-show="showInfo" x-collapse x-cloak class="mt-6 space-y-6">
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App Information - Laissez Faire</title>
-    <link rel="stylesheet" href="css/style.css">
-    <!-- Theme Manager -->
-    <script src="js/theme.js"></script>
-    <script src="js/custom-events.js"></script>
-    <!-- Alpine.js -->
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-</head>
-
-<body class="page-body">
-    <nav class="top-nav">
-        <div class="top-nav__inner">
-            <div class="top-nav__left">
-                <button onclick="location.href='dashboard.html'" class="back-btn--shadow">
-                    <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
-                        </path>
-                    </svg>
-                </button>
-            </div>
-
-            <div class="top-nav__center">
-                <img src="img/logo.png" alt="REBUILT Logo" class="brand__logo--nav">
-                <span class="brand__subtitle--orange">Laissez Faire</span>
-            </div>
-
-            <div class="top-nav__right">
-            </div>
-        </div>
-    </nav>
-
-    <section class="page-hero">
-        <h1 class="page-hero__title">App Information</h1>
-        <p class="text-slate-400 text-sm font-bold uppercase tracking-widest mt-2">Usage Guide & Tips</p>
-    </section>
-
-    <div class="container--sm space-y-8 pb-12">
-        <!-- Usage Guide Card -->
-        <div class="card p-8 border-l-4 border-orange-500">
-            <h2 class="text-xl font-black text-white mb-6 flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-orange-500/20 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                </div>
-                Quick Start Guide
-            </h2>
-
-            <div class="space-y-6 text-slate-300">
-                <div class="space-y-2">
-                    <h3 class="text-xs font-black uppercase text-orange-500 tracking-wider">Match Scouting</h3>
-                    <p class="text-sm leading-relaxed">
-                        Navigate to the <span class="text-white font-bold">Scout</span> page from the dashboard.
-                        Enter the match and team number, then follow the sections to record robot performance during
-                        Auto, Teleop, and Endgame.
-                    </p>
-                </div>
-
-                <div class="space-y-2">
-                    <h3 class="text-xs font-black uppercase text-orange-500 tracking-wider">Pit Scouting</h3>
-                    <p class="text-sm leading-relaxed">
-                        Use the <span class="text-white font-bold">Pit Scout</span> feature to record technical data
-                        about a robot while in the pits.
-                        This data is invaluable for strategy planning and identifying alliance partners.
-                    </p>
-                </div>
-
-                <div class="space-y-2">
-                    <h3 class="text-xs font-black uppercase text-orange-500 tracking-wider">Analysis</h3>
-                    <p class="text-sm leading-relaxed">
-                        Visit the <span class="text-white font-bold">Matches</span> page to see all recorded data.
-                        You can expand matches to see score breakdowns from the API and detailed reports from our
-                        scouts.
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Pro Tips Card -->
-        <div class="card p-8 border-l-4 border-blue-500">
-            <h2 class="text-xl font-black text-white mb-6 flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z">
-                        </path>
-                    </svg>
-                </div>
-                Pro Tips
-            </h2>
-
-            <ul class="space-y-4 text-sm text-slate-400">
-                <li class="flex gap-3">
-                    <div class="mt-1 w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></div>
-                    <span>Searching for a team on the <span class="text-blue-400">Teams</span> page will automatically
-                        highlight their matches on the <span class="text-blue-400">Matches</span> page.</span>
-                </li>
-                <li class="flex gap-3">
-                    <div class="mt-1 w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></div>
-                    <span>The <span class="text-blue-400">Auto Climb</span> rating specifically tracks robot stability
-                        and success in the first few seconds.</span>
-                </li>
-                <li class="flex gap-3">
-                    <div class="mt-1 w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></div>
-                    <span>Check for the <svg class="inline w-3 h-3 text-blue-400" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7">
-                            </path>
-                        </svg> tick to identify reports from verified team members.</span>
-                </li>
-            </ul>
-        </div>
-
-        <!-- Custom Information Card -->
-        <div class="card p-8 border-l-4 border-green-500">
-            <h2 class="text-xl font-black text-white mb-6 flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                </div>
-                Additional Information
-            </h2>
-
-
-            <div class="space-y-6 text-slate-300">
-                <div class="space-y-2">
-                    <h3 class="text-xs font-black uppercase text-orange-500 tracking-wider">Authentication Policy</h3>
-                    <p class="text-sm leading-relaxed">
-                        Any user is allowed to sign up for our page. But to keep data secure and reliable, we've added
-                        a verification system. To verify your account, a secret code changing every week is required.
-                        If the code is correct, your account should be verrified in less then 2 days. How to get the
-                        code? Reach out for 8056 Laissez Faire team member aress4lf56@gmail.com with your full name,
-                        your mobile phone number, your team number and the Regionals your team is participating in 2026.
-                    </p>
-                </div>
-
-                <div class="space-y-2">
-                    <h3 class="text-xs font-black uppercase text-orange-500 tracking-wider">Data Security</h3>
-                    <p class="text-sm leading-relaxed">
-                        All data is stored on a Firebase database. Please be aware that all data (excluding account
-                        passwords) can be seen and if needed edited or deleted by our admin.
-                    </p>
-                </div>
-
-                <div class="space-y-2">
-                    <h3 class="text-xs font-black uppercase text-orange-500 tracking-wider">Beta Version</h3>
-                    <p class="text-sm leading-relaxed">
-                        Our apps main target is help all teams competing in Turkish competitions at their competition
-                        strategies, yet note that our page is still in development and testing phase. There can be
-                        mistakes and bugs. Feel free to report any mistakes trough the given email adress. Our goal is
-                        to create the perfect FRC Hub to use in all 8 Regionals in Türkiye.
-                    </p>
-                </div>
-
-                <div class="space-y-2">
-                    <h3 class="text-xs font-black uppercase text-orange-500 tracking-wider">Laissez Faire 8056</h3>
-                    <p class="text-sm leading-relaxed">
-                        We are the first independent FRC team located in İzmir, Türkiye. With our motto "Let Them Do It"
-                        we've come along a long way since our founding in 2020, gaining experience and team spirit that
-                        led us get where we are now. Our multi-school structure gives us oppurtunities to meet and get
-                        together with countless worthy people, we would have never met without 8056. Thats what we're
-                        proud of and what we are.
-                    </p>
-                </div>
-
-                <!-- NEW: Reach Us Section -->
-                <div class="space-y-4 pt-6 mt-6 border-t border-white/10">
-                    <h3 class="text-xs font-black uppercase text-orange-500 tracking-wider">Reach Us</h3>
-                    <div class="flex flex-col gap-4">
-                        <a href="https://instagram.com/frc.laissez.faire" target="_blank"
-                            class="flex items-center gap-3 text-slate-300 hover:text-orange-400 transition-colors">
-                            <div class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                    <path
-                                        d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                                </svg>
-                            </div>
-                            <span class="text-sm font-bold">@frc.laissez.faire</span>
-                        </a>
-                        <a href="mailto:aress4lf56@gmail.com"
-                            class="flex items-center gap-3 text-slate-300 hover:text-orange-400 transition-colors">
-                            <div class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
-                                    </path>
-                                </svg>
-                            </div>
-                            <span class="text-sm font-bold">aress4lf56@gmail.com</span>
-                        </a>
-                    </div>
-                </div>
-
-
-            </div>
-
-        </div>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - REBUILT 2026</title>
-  <link rel="stylesheet" href="css/style.css">
-  <!-- Theme Manager -->
-  <script src="js/theme.js"></script>
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-  <!-- Alpine.js -->
-  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-  <style>
-    [x-cloak] {
-      display: none !important;
-    }
-  </style>
-</head>
-
-<body class="page-body--centered" x-data="loginApp">
-  <!-- Top Bar -->
-  <div class="top-bar--fixed">
-    <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-      <img src="img/logo.png" alt="REBUILT Logo" style="height: 24px; width: 24px;">
-      <span class="top-bar__text">Laissez Faire</span>
-    </div>
-  </div>
-
-  <div class="card--auth">
-    <div class="card__header">
-
-      <img src="img/logo.png" alt="REBUILT Logo" class="brand__logo--hero">
-      <h1 class="brand__title--hero">REBUILT 2026</h1>
-      <p class="brand__subtitle--login">Login to start scouting</p>
-    </div>
-
-    <div class="stack-spacing--4">
-      <div>
-        <label class="form-label--sm">Email</label>
-        <input x-model="email" type="email" placeholder="email@example.com" class="form-input--auth"
-          autocomplete="email">
-      </div>
-
-      <div>
-        <label class="form-label--sm">Password</label>
-        <input x-model="password" type="password" placeholder="••••••••" class="form-input--auth"
-          autocomplete="current-password">
-      </div>
-
-      <div x-show="errorMessage" x-text="errorMessage" class="error-message"></div>
-
-      <button @click="login" :disabled="loading" class="btn-primary">
-        <template x-if="loading">
-          <svg class="spinner--sm" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="spinner__circle" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="spinner__path" fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-            </path>
-          </svg>
-        </template>
-        <span x-text="loading ? 'Logging in...' : 'Login'"></span>
-      </button>
-    </div>
-
-    <div class="auth-footer">
-      Don't have an account?
-      <a href="register.html" class="auth-footer__link">Register Page</a>
-    </div>
-
-    <!-- App Information Section -->
-    <div x-data="{ showInfo: false }" class="mt-12 w-full max-w-2xl">
-      <button @click="showInfo = !showInfo"
-        class="w-full h-14 flex items-center justify-between px-6 rounded-2xl bg-slate-900 border border-slate-800 hover:border-orange-500/50 transition-all group shadow-xl">
-        <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center">
-            <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-          </div>
-          <span
-            class="text-xs font-black uppercase tracking-widest text-slate-300 group-hover:text-orange-500 transition-colors">View
-            App Information & Guide</span>
-        </div>
-        <svg class="w-5 h-5 text-slate-500 transition-transform duration-500" :class="showInfo ? 'rotate-180' : ''"
-          fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-        </svg>
-      </button>
-
-      <div x-show="showInfo" x-collapse x-cloak class="mt-6 space-y-6">
         <!-- Quick Start Guide -->
         <div class="card p-6 border-l-4 border-orange-500">
           <h3 class="text-xs font-black uppercase text-orange-500 tracking-widest mb-4">Quick Start Guide</h3>
@@ -401,12 +100,19 @@
             <div>
               <p class="text-[11px] font-black text-white uppercase tracking-wider">Match Scouting</p>
               <p class="text-xs text-slate-400 leading-relaxed mt-1">Navigate to the Scout page from the dashboard.
-                Enter match/team numbers to record robot performance during Auto, Teleop, and Endgame.</p>
+                Enter the match and team number, then follow the sections to record robot performance during Auto,
+                Teleop, and Endgame.</p>
             </div>
             <div>
               <p class="text-[11px] font-black text-white uppercase tracking-wider">Pit Scouting</p>
               <p class="text-xs text-slate-400 leading-relaxed mt-1">Use the Pit Scout feature to record technical data
-                about a robot in the pits. Invaluable for strategy planning.</p>
+                about a robot while in the pits. This data is invaluable for strategy planning and identifying alliance
+                partners.</p>
+            </div>
+            <div>
+              <p class="text-[11px] font-black text-white uppercase tracking-wider">Analysis</p>
+              <p class="text-xs text-slate-400 leading-relaxed mt-1">Visit the Matches page to see all recorded data.
+                You can expand matches to see score breakdowns from the API and detailed reports from our scouts.</p>
             </div>
           </div>
         </div>
@@ -417,11 +123,17 @@
           <ul class="space-y-3 text-xs text-slate-400">
             <li class="flex gap-3">
               <div class="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></div>
-              <span>Searching for a team on the Teams page highlights their matches globally.</span>
+              <span>Searching for a team on the Teams page will automatically highlight their matches on the Matches
+                page.</span>
             </li>
             <li class="flex gap-3">
               <div class="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></div>
-              <span>Check for the blue checkmark to identify verified team members.</span>
+              <span>The Auto Climb rating specifically tracks robot stability and success in the first few
+                seconds.</span>
+            </li>
+            <li class="flex gap-3">
+              <div class="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></div>
+              <span>Check for the blue checkmark to identify reports from verified team members.</span>
             </li>
           </ul>
         </div>
@@ -432,18 +144,33 @@
           <div class="space-y-4">
             <div>
               <p class="text-[11px] font-black text-white uppercase tracking-wider">Authentication Policy</p>
-              <p class="text-xs text-slate-400 leading-relaxed mt-1">Verification requires a weekly secret code. Reach
-                out to 8056 Laissez Faire members for access.</p>
+              <p class="text-xs text-slate-400 leading-relaxed mt-1">Any user is allowed to sign up for our page. But to
+                keep data secure and reliable, we've added a verification system. To verify your account, a secret code
+                changing every week is required. If the code is correct, your account should be verrified in less then 2
+                days. How to get the code? Reach out for 8056 Laissez Faire team member aress4lf56@gmail.com with your
+                full name, your mobile phone number, your team number and the Regionals your team is participating in
+                2026.</p>
             </div>
             <div>
               <p class="text-[11px] font-black text-white uppercase tracking-wider">Data Security</p>
-              <p class="text-xs text-slate-400 leading-relaxed mt-1">All data (excluding passwords) is visible to admins
-                for verification and editing.</p>
+              <p class="text-xs text-slate-400 leading-relaxed mt-1">All data is stored on a Firebase database. Please
+                be aware that all data (excluding account passwords) can be seen and if needed edited or deleted by our
+                admin.</p>
+            </div>
+            <div>
+              <p class="text-[11px] font-black text-white uppercase tracking-wider">Beta Version</p>
+              <p class="text-xs text-slate-400 leading-relaxed mt-1">Our apps main target is help all teams competing in
+                Turkish competitions at their competition strategies, yet note that our page is still in development and
+                testing phase. There can be mistakes and bugs. Feel free to report any mistakes trough the given email
+                adress. Our goal is to create the perfect FRC Hub to use in all 8 Regionals in Türkiye.</p>
             </div>
             <div>
               <p class="text-[11px] font-black text-white uppercase tracking-wider">Laissez Faire 8056</p>
-              <p class="text-xs text-slate-400 leading-relaxed mt-1">First independent FRC team in İzmir, Türkiye.
-                Founded in 2020. Motto: "Let Them Do It".</p>
+              <p class="text-xs text-slate-400 leading-relaxed mt-1">We are the first independent FRC team located in
+                İzmir, Türkiye. With our motto "Let Them Do It" we've come along a long way since our founding in 2020,
+                gaining experience and team spirit that led us get where we are now. Our multi-school structure gives us
+                oppurtunities to meet and get together with countless worthy people, we would have never met without
+                8056. Thats what we're proud of and what we are.</p>
             </div>
           </div>
         </div>

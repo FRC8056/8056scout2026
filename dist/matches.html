@@ -110,12 +110,12 @@
                             </div>
                         </div>
 
-                        <!-- Score Preview -->
-                        <div class="flex items-center gap-4">
-                            <div class="match-card__scores">
+                        <!-- Score Preview & Buttons (Stacked Right) -->
+                        <div class="flex flex-col items-end gap-2 shrink-0 ml-4">
+                            <div class="flex flex-col gap-1.5">
                                 <!-- SCOUT MATCH SHORTCUT -->
                                 <a :href="`scout.html?season=${selectedSeasons[0] || match.eventKey.substring(0,4)}&regional=${match.eventKey}&type=${match.type}&match=${match.matchNumber}`"
-                                    class="mr-2 px-2 py-1 bg-orange-500/10 hover:bg-orange-500 text-orange-400 hover:text-white rounded border border-orange-500/20 text-[9px] font-black uppercase tracking-tighter transition-all flex items-center gap-1.5 pointer-events-auto"
+                                    class="px-2 py-1 bg-orange-500/10 hover:bg-orange-500 text-orange-400 hover:text-white rounded border border-orange-500/20 text-[9px] font-black uppercase tracking-tighter transition-all flex items-center justify-center gap-1.5 pointer-events-auto w-full min-w-[65px]"
                                     @click.stop>
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
@@ -127,7 +127,7 @@
                                 <!-- VIEW ON TBA -->
                                 <a :href="FRC_CONFIG.getTbaMatchUrl(match.eventKey, match.type, match.matchNumber)"
                                     target="_blank"
-                                    class="mr-2 px-2 py-1 bg-blue-500/10 hover:bg-blue-500 text-blue-400 hover:text-white rounded border border-blue-500/20 text-[9px] font-black uppercase tracking-tighter transition-all flex items-center gap-1.5">
+                                    class="px-2 py-1 bg-blue-500/10 hover:bg-blue-500 text-blue-400 hover:text-white rounded border border-blue-500/20 text-[9px] font-black uppercase tracking-tighter transition-all flex items-center justify-center gap-1.5 w-full min-w-[65px]">
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14">
@@ -135,16 +135,20 @@
                                     </svg>
                                     TBA
                                 </a>
-                                <div class="match-card__score-preview">
-                                    <span class="match-card__score-red" x-text="match.scoreRedFinal || 0"></span>
-                                    <div class="match-card__dot-red"></div>
-                                    <div class="match-card__dot-blue"></div>
-                                    <span class="match-card__score-blue" x-text="match.scoreBlueFinal || 0"></span>
-                                </div>
-                                <svg class="match-card__chevron shrink-0"
+                            </div>
+
+                            <div
+                                class="match-card__score-preview px-2 py-1 bg-slate-900/50 rounded-lg border border-slate-800/50 shadow-inner flex items-center gap-2">
+                                <span class="match-card__score-red text-[11px]"
+                                    x-text="match.scoreRedFinal || 0"></span>
+                                <div class="match-card__dot-red scale-75"></div>
+                                <div class="match-card__dot-blue scale-75"></div>
+                                <span class="match-card__score-blue text-[11px]"
+                                    x-text="match.scoreBlueFinal || 0"></span>
+                                <svg class="match-card__chevron shrink-0 w-3 h-3 ml-1"
                                     :class="expandedMatches.includes(match.eventKey + '_' + match.type + '_' + match.matchNumber) ? 'rotate-180' : ''"
                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                         d="M19 9l-7 7-7-7">
                                     </path>
                                 </svg>
@@ -194,6 +198,13 @@
                             class="w-full flex items-center justify-between px-3 py-2 bg-slate-900/50 hover:bg-slate-800 rounded-lg border border-slate-700/50 transition-colors">
                             <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Full API Match
                                 Breakdown</span>
+                            <template x-if="expandedApi && !match.rawScoreBreakdown && loading">
+                                <div
+                                    class="flex items-center gap-2 px-2 py-0.5 bg-orange-500/10 rounded border border-orange-500/20">
+                                    <div class="w-1 h-1 bg-orange-500 rounded-full animate-ping"></div>
+                                    <span class="text-[8px] font-black text-orange-500 uppercase">Syncing...</span>
+                                </div>
+                            </template>
                             <svg class="w-3.5 h-3.5 text-slate-500 transition-transform duration-300"
                                 :class="expandedApi ? 'rotate-180' : ''" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">

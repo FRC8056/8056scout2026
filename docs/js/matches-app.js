@@ -19,12 +19,16 @@ document.addEventListener('alpine:init', () => {
             try {
                 this.manualTeams = await loadManualTeams();
 
-                // Handle URL params like ?team=8056
+                // Handle URL params like ?team=8056&regionals=2026cnsh,2026flor
                 const params = new URLSearchParams(window.location.search);
                 if (params.has('team')) {
                     this.searchQuery = params.get('team');
-                    // Ensure the year/event might need to be adjusted if matching a specific team, 
-                    // but for now just setting search query is safest for the user to see results.
+                }
+                if (params.has('regionals')) {
+                    const regStr = params.get('regionals');
+                    if (regStr) {
+                        this.selectedEvents = regStr.split(',').filter(k => k);
+                    }
                 }
 
                 this.$watch('selectedEvents', () => {
@@ -212,8 +216,9 @@ document.addEventListener('alpine:init', () => {
             });
 
             return list.filter(m => {
-                // Event Filter
-                if (this.selectedEvents.length > 0 && !this.selectedEvents.includes(m.eventKey)) return false;
+                // Event Filter - STRICT: Only show if event key is in selectedEvents
+                if (this.selectedEvents.length === 0) return false;
+                if (!this.selectedEvents.includes(m.eventKey)) return false;
 
                 // Type Filter
                 const isPractice = m.compLevel === 'p' || m.type === 'Practice';

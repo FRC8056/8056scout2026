@@ -119,6 +119,7 @@ document.addEventListener('alpine:init', () => {
         },
 
         async loadTeamDetail(team) {
+            team.loadingDetails = true;
             try {
                 // 1. Fetch Basic Info Media (Logo)
                 const media = await this.fetchTBARequest(`team/frc${team.teamNumber}/media/2025`);
@@ -145,6 +146,8 @@ document.addEventListener('alpine:init', () => {
                 team.events = allTeamEvents.sort((a, b) => b.year - a.year || b.start_date.localeCompare(a.start_date));
             } catch (e) {
                 console.error("Detail load failed for " + team.teamNumber, e);
+            } finally {
+                team.loadingDetails = false;
             }
         },
 
