@@ -1,6 +1,7 @@
 document.addEventListener('alpine:init', () => {
     Alpine.data('regionalsApp', () => ({
-        searchQuery: '', // Unified global search
+        searchQuery: '', // Global regional search
+        teamSearchQuery: '', // Search inside expanded regional
         expandedRegionals: [],
         regionalData: {}, // Map eventKey -> { matches: [], rankings: [], awards: [], loading: false, teams: [] }
         eventTeamsMap: {}, // Map eventKey -> [teamNumbers] for global search
@@ -123,8 +124,8 @@ document.addEventListener('alpine:init', () => {
 
         getFilteredMatches(eventKey) {
             const matches = this.regionalData[eventKey]?.matches || [];
-            if (!this.searchQuery) return matches;
-            const q = this.searchQuery.toLowerCase();
+            if (!this.teamSearchQuery) return matches;
+            const q = this.teamSearchQuery.toLowerCase();
             const teams = this.regionalData[eventKey]?.teams || [];
 
             return matches.filter(m => {
@@ -156,8 +157,8 @@ document.addEventListener('alpine:init', () => {
                 }));
             }
 
-            if (!this.searchQuery) return list;
-            const q = this.searchQuery.toLowerCase();
+            if (!this.teamSearchQuery) return list;
+            const q = this.teamSearchQuery.toLowerCase();
             return list.filter(r => {
                 const teamNum = r.team_key.replace('frc', '');
                 const teamName = data.teams?.find(t => t.teamNumber === parseInt(teamNum))?.name || '';
@@ -167,8 +168,8 @@ document.addEventListener('alpine:init', () => {
 
         getFilteredAwards(eventKey) {
             const awards = this.regionalData[eventKey]?.awards || [];
-            if (!this.searchQuery) return awards;
-            const q = this.searchQuery.toLowerCase();
+            const q = this.teamSearchQuery.toLowerCase();
+            if (!q) return awards;
             return awards.filter(a =>
                 a.name.toLowerCase().includes(q) ||
                 a.recipient_list?.some(r => r.team_key?.replace('frc', '').includes(q) || r.awardee?.toLowerCase().includes(q))
@@ -177,7 +178,14 @@ document.addEventListener('alpine:init', () => {
 
         getRankData(rank, label, eventKey) {
             if (!rank || !this.regionalData[eventKey]) return '-';
-            const info = this.regionalData[eventKey].rankings?.sort_order_info;
+            const data = this.regionalData[eventKey].rankings;
+            const info = data?.sort_order_info;
+
+            // Special case for Total RP (Integers)
+            if (label === 'Ranking Points') {
+                return rank.sort_orders ? Math.round(rank.sort_orders[0] * rank.matches_played) : '0';
+            }
+
             if (!info || !rank.sort_orders) return '-';
             const index = info.findIndex(i => i.name === label);
             return index !== -1 ? (rank.sort_orders[index]?.toFixed(2) || '0') : '-';
