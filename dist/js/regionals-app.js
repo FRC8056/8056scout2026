@@ -1,9 +1,9 @@
 document.addEventListener('alpine:init', () => {
     Alpine.data('regionalsApp', () => ({
-        availableEvents: FRC_CONFIG.events,
-        searchQuery: '',
+        searchQuery: '', // Global regional search
+        teamSearchQuery: '', // Search inside expanded regional
         expandedRegionals: [],
-        regionalData: {}, // Map eventKey -> { matches: [], rankings: [], awards: [], loading: false }
+        regionalData: {}, // Map eventKey -> { matches: [], rankings: [], awards: [], loading: false, teams: [] }
         pitReports: {}, // Map teamNumber -> [reports]
         expandedMatches: [],
         expandedReports: [],
@@ -12,7 +12,7 @@ document.addEventListener('alpine:init', () => {
         expandedPitReports: [],
 
         async init() {
-            // Load Pit Reports globally for team expansion
+            // Load ALL Pit Reports for the season (season-wide)
             db.collection('pitScouting').onSnapshot(snapshot => {
                 this.pitReports = {};
                 snapshot.forEach(doc => {
@@ -22,6 +22,15 @@ document.addEventListener('alpine:init', () => {
                         this.pitReports[data.teamNumber] = [];
                     }
                     this.pitReports[data.teamNumber].push(data);
+                });
+
+                // Sort by date newest first
+                Object.keys(this.pitReports).forEach(num => {
+                    this.pitReports[num].sort((a, b) => {
+                        const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || 0);
+                        const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt || 0);
+                        return dateB - dateA;
+                    });
                 });
             });
         },
@@ -52,39 +61,106 @@ document.addEventListener('alpine:init', () => {
                 rankings: null,
                 awards: [],
                 loading: true,
-                teams: [] // To store team info for expansion
+                teams: []
             };
 
             try {
-                const [matches, rankings, awards] = await Promise.all([
+                const [matches, rankings, awards, eventTeams] = await Promise.all([
                     fetchFRCMatches(eventKey),
                     this.fetchTBARequest(`event/${eventKey}/rankings`),
-                    this.fetchTBARequest(`event/${eventKey}/awards`)
+                    this.fetchTBARequest(`event/${eventKey}/awards`),
+                    this.fetchTBARequest(`event/${eventKey}/teams`)
                 ]);
 
-                // Post-process rankings to include team info
-                if (rankings && rankings.rankings) {
-                    const eventTeams = await this.fetchTBARequest(`event/${eventKey}/teams`);
-                    this.regionalData[eventKey].teams = eventTeams.map(t => ({
-                        teamNumber: t.team_number,
-                        name: t.nickname || t.name,
-                        city: t.city,
-                        country: t.country,
-                        awards: [],
-                        events: [],
-                        logoUrl: null,
-                        loadingDetails: false
-                    }));
-                }
+                // Sort matches OLD to NEW (Ascending)
+                this.regionalData[eventKey].matches = matches.sort((a, b) => {
+                    const timeA = a.actualStartTime ? new Date(a.actualStartTime).getTime() : 9999999999999;
+                    const timeB = b.actualStartTime ? new Date(b.actualStartTime).getTime() : 9999999999999;
+                    return timeA - timeB;
+                });
 
-                this.regionalData[eventKey].matches = matches;
                 this.regionalData[eventKey].rankings = rankings;
                 this.regionalData[eventKey].awards = awards;
+
+                // Always have teams list available for fallback or expansion
+                this.regionalData[eventKey].teams = (eventTeams || []).map(t => ({
+                    teamNumber: t.team_number,
+                    name: t.nickname || t.name,
+                    city: t.city,
+                    country: t.country,
+                    awards: [],
+                    events: [],
+                    logoUrl: null,
+                    loadingDetails: false
+                })).sort((a, b) => a.teamNumber - b.teamNumber);
+
             } catch (err) {
                 console.error("Failed to load regional data:", err);
             } finally {
                 this.regionalData[eventKey].loading = false;
             }
+        },
+
+        getFilteredMatches(eventKey) {
+            const matches = this.regionalData[eventKey]?.matches || [];
+            if (!this.teamSearchQuery) return matches;
+            const q = this.teamSearchQuery.toLowerCase();
+            const teams = this.regionalData[eventKey]?.teams || [];
+
+            return matches.filter(m => {
+                const matchNumMatch = m.matchNumber.toString().includes(q);
+                const teamMatch = m.teams?.some(mt => {
+                    const teamNum = mt.teamNumber.toString();
+                    if (teamNum.includes(q)) return true;
+                    const team = teams.find(t => t.teamNumber === mt.teamNumber);
+                    return team?.name?.toLowerCase().includes(q);
+                });
+                return matchNumMatch || teamMatch;
+            });
+        },
+
+        getFilteredRankings(eventKey) {
+            const data = this.regionalData[eventKey];
+            if (!data) return [];
+
+            let list = [];
+            if (data.rankings && data.rankings.rankings && data.rankings.rankings.length > 0) {
+                list = data.rankings.rankings;
+            } else {
+                // Fallback: show teams if no rankings yet
+                list = data.teams.map((t, i) => ({
+                    rank: '-',
+                    team_key: 'frc' + t.teamNumber,
+                    matches_played: 0,
+                    record: { wins: 0, losses: 0, ties: 0 }
+                }));
+            }
+
+            if (!this.teamSearchQuery) return list;
+            const q = this.teamSearchQuery.toLowerCase();
+            return list.filter(r => {
+                const teamNum = r.team_key.replace('frc', '');
+                const teamName = data.teams.find(t => t.teamNumber === parseInt(teamNum))?.name || '';
+                return teamNum.includes(q) || teamName.toLowerCase().includes(q);
+            });
+        },
+
+        getFilteredAwards(eventKey) {
+            const awards = this.regionalData[eventKey]?.awards || [];
+            if (!this.teamSearchQuery) return awards;
+            const q = this.teamSearchQuery.toLowerCase();
+            return awards.filter(a =>
+                a.name.toLowerCase().includes(q) ||
+                a.recipient_list?.some(r => r.team_key?.replace('frc', '').includes(q) || r.awardee?.toLowerCase().includes(q))
+            );
+        },
+
+        getRankData(rank, label, eventKey) {
+            if (!rank || !this.regionalData[eventKey]) return '-';
+            const info = this.regionalData[eventKey].rankings?.sort_order_info;
+            if (!info) return '-';
+            const index = info.findIndex(i => i.name === label);
+            return index !== -1 ? (rank.sort_orders[index]?.toFixed(2) || '0') : '-';
         },
 
         async fetchTBARequest(endpoint) {

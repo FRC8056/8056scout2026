@@ -81,6 +81,20 @@
 
                     <template x-if="!regionalData[event.key]?.loading">
                         <div x-data="{ tab: 'matches' }">
+                            <!-- Team Search Bar Inside Regional -->
+                            <div class="px-4 py-3 bg-slate-900/80 border-b border-slate-800 flex items-center gap-3">
+                                <div class="relative flex-1">
+                                    <input x-model="teamSearchQuery" type="text"
+                                        placeholder="Search team # or name in this regional..."
+                                        class="w-full bg-slate-950 border border-slate-800 rounded-lg py-1.5 pl-8 pr-3 text-[10px] text-white focus:outline-none focus:border-orange-500/50 transition-all">
+                                    <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-500"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                </div>
+                            </div>
+
                             <div class="flex border-b border-slate-800 bg-slate-900/50">
                                 <button @click="tab = 'matches'"
                                     :class="tab === 'matches' ? 'border-orange-500 text-orange-500 bg-orange-500/5' : 'border-transparent text-slate-500'"
@@ -95,7 +109,7 @@
 
                             <!-- Matches Section -->
                             <div x-show="tab === 'matches'" class="p-2 space-y-2">
-                                <template x-for="match in regionalData[event.key].matches"
+                                <template x-for="match in getFilteredMatches(event.key)"
                                     :key="match.matchNumber + match.compLevel">
                                     <div class="bg-slate-800/20 border border-slate-700/30 rounded-lg overflow-hidden">
                                         <div @click="toggleMatch(event.key + match.compLevel + match.matchNumber)"
@@ -105,18 +119,24 @@
                                                     <span class="text-[10px] font-black text-orange-500 uppercase"
                                                         x-text="match.description"></span>
                                                     <span class="text-[9px] text-slate-500 font-bold"
-                                                        x-text="formatDate(match.actualStartTime)"></span>
+                                                        x-text="match.actualStartTime ? formatDate(match.actualStartTime) : 'Scheduled'"></span>
                                                 </div>
                                             </div>
                                             <div class="flex items-center gap-4">
-                                                <div
-                                                    class="flex items-center gap-2 px-2 py-1 bg-slate-900/50 rounded border border-slate-700/50">
-                                                    <span class="text-[11px] font-black text-red-500"
-                                                        x-text="match.scoreRedFinal || 0"></span>
-                                                    <div class="w-1.5 h-1.5 rounded-full bg-slate-700"></div>
-                                                    <span class="text-[11px] font-black text-blue-500"
-                                                        x-text="match.scoreBlueFinal || 0"></span>
-                                                </div>
+                                                <template x-if="match.actualStartTime">
+                                                    <div
+                                                        class="flex items-center gap-2 px-2 py-1 bg-slate-900/50 rounded border border-slate-700/50">
+                                                        <span class="text-[11px] font-black text-red-500"
+                                                            x-text="match.scoreRedFinal || 0"></span>
+                                                        <div class="w-1.5 h-1.5 rounded-full bg-slate-700"></div>
+                                                        <span class="text-[11px] font-black text-blue-500"
+                                                            x-text="match.scoreBlueFinal || 0"></span>
+                                                    </div>
+                                                </template>
+                                                <template x-if="!match.actualStartTime">
+                                                    <span
+                                                        class="text-[9px] text-slate-600 font-black uppercase tracking-widest italic">Pending</span>
+                                                </template>
                                                 <svg class="w-3 h-3 text-slate-600 transition-transform"
                                                     :class="expandedMatches.includes(event.key + match.compLevel + match.matchNumber) ? 'rotate-180' : ''"
                                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -125,27 +145,57 @@
                                                 </svg>
                                             </div>
                                         </div>
-                                        <!-- Expand Match (Same as matches page) -->
+                                        <!-- Expand Match -->
                                         <div x-show="expandedMatches.includes(event.key + match.compLevel + match.matchNumber)"
-                                            class="p-3 border-t border-slate-800/80 bg-slate-900/40 space-y-3">
+                                            x-collapse
+                                            class="p-4 border-t border-slate-800/80 bg-slate-900/40 space-y-4">
+                                            <!-- Buttons moved to expanded section -->
+                                            <div class="flex gap-2">
+                                                <a :href="`scout.html?season=${event.season}&regional=${event.key}&type=${match.compLevel === 'qm' ? 'Qualification' : (match.compLevel === 'p' ? 'Practice' : (match.compLevel === 'f' ? 'Finals' : 'Playoffs'))}&match=${match.matchNumber}`"
+                                                    class="flex-1 py-1.5 bg-orange-600 hover:bg-orange-500 text-white rounded text-[10px] font-black uppercase flex items-center justify-center gap-2 shadow-lg shadow-orange-900/20 transition-all">
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="3"
+                                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                                        </path>
+                                                    </svg>
+                                                    Scout Match
+                                                </a>
+                                                <a :href="FRC_CONFIG.getTbaMatchUrl(event.key, match.compLevel === 'qm' ? 'Qualification' : (match.compLevel === 'p' ? 'Practice' : (match.compLevel === 'f' ? 'Finals' : 'Playoffs')), match.matchNumber)"
+                                                    target="_blank"
+                                                    class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded text-[10px] font-black uppercase flex items-center justify-center gap-2">
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14">
+                                                        </path>
+                                                    </svg>
+                                                    TBA
+                                                </a>
+                                            </div>
+
                                             <div class="grid grid-cols-2 gap-4 text-center">
-                                                <div class="space-y-1">
+                                                <div class="space-y-2">
                                                     <span
-                                                        class="text-[9px] font-black text-red-500 uppercase tracking-widest">Red
+                                                        class="text-[9px] font-black text-red-500 uppercase tracking-widest border-b border-red-500/20 pb-1 block">Red
                                                         Alliance</span>
                                                     <template
                                                         x-for="t in match.teams.filter(t => t.station.startsWith('Red'))">
-                                                        <div class="text-[10px] text-white font-bold"
+                                                        <div @click.stop="location.href='teams.html?team=' + t.teamNumber"
+                                                            class="text-[10px] text-white font-bold bg-red-500/5 py-1 px-2 rounded border border-red-500/10 cursor-pointer hover:bg-red-500/20 transition-all"
                                                             x-text="'#' + t.teamNumber"></div>
                                                     </template>
                                                 </div>
-                                                <div class="space-y-1">
+                                                <div class="space-y-2">
                                                     <span
-                                                        class="text-[9px] font-black text-blue-500 uppercase tracking-widest">Blue
+                                                        class="text-[9px] font-black text-blue-500 uppercase tracking-widest border-b border-blue-500/20 pb-1 block">Blue
                                                         Alliance</span>
                                                     <template
                                                         x-for="t in match.teams.filter(t => t.station.startsWith('Blue'))">
-                                                        <div class="text-[10px] text-white font-bold"
+                                                        <div @click.stop="location.href='teams.html?team=' + t.teamNumber"
+                                                            class="text-[10px] text-white font-bold bg-blue-500/5 py-1 px-2 rounded border border-blue-500/10 cursor-pointer hover:bg-blue-500/20 transition-all"
                                                             x-text="'#' + t.teamNumber"></div>
                                                     </template>
                                                 </div>
@@ -156,91 +206,140 @@
                             </div>
 
                             <!-- Rankings Section -->
-                            <div x-show="tab === 'rankings'" class="p-2 space-y-2">
-                                <template
-                                    x-for="rank in (regionalData[event.key].rankings?.rankings || regionalData[event.key].teams.map((t, i) => ({ rank: i+1, team_key: 'frc'+t.teamNumber })))"
-                                    :key="rank.team_key">
+                            <div x-show="tab === 'rankings'" class="p-1.5 space-y-1.5">
+                                <div
+                                    class="grid grid-cols-12 px-3 py-2 text-[8px] font-black text-slate-600 uppercase tracking-wider">
+                                    <div class="col-span-1">RK</div>
+                                    <div class="col-span-3">Team</div>
+                                    <div class="col-span-2 text-right">W-L-T</div>
+                                    <div class="col-span-2 text-right">RP</div>
+                                    <div class="col-span-2 text-right">Avg Match</div>
+                                    <div class="col-span-2 text-right">Score</div>
+                                </div>
+                                <template x-for="rank in getFilteredRankings(event.key)" :key="rank.team_key">
                                     <div class="bg-slate-800/20 border border-slate-700/30 rounded-lg overflow-hidden">
                                         <div @click="toggleTeam(parseInt(rank.team_key.replace('frc','')), event.key)"
-                                            class="p-3 flex items-center justify-between cursor-pointer hover:bg-slate-800/40">
-                                            <div class="flex items-center gap-4">
-                                                <span class="text-xs font-black text-orange-500 w-4 text-center"
-                                                    x-text="rank.rank"></span>
-                                                <div class="flex flex-col">
-                                                    <span class="text-[10px] font-black text-white"
-                                                        x-text="'#' + rank.team_key.replace('frc','')"></span>
-                                                    <span class="text-[8px] text-slate-500 font-bold uppercase"
-                                                        x-text="regionalData[event.key].teams.find(t => t.teamNumber === parseInt(rank.team_key.replace('frc','')))?.name"></span>
-                                                </div>
+                                            class="p-3 grid grid-cols-12 items-center cursor-pointer hover:bg-slate-800/40 transition-colors">
+                                            <div class="col-span-1 text-xs font-black text-orange-500"
+                                                x-text="rank.rank"></div>
+                                            <div class="col-span-3 flex flex-col">
+                                                <span class="text-[10px] font-black text-white"
+                                                    x-text="'#' + rank.team_key.replace('frc','')"></span>
+                                                <span class="text-[8px] text-slate-500 font-bold uppercase truncate"
+                                                    x-text="regionalData[event.key].teams.find(t => t.teamNumber === parseInt(rank.team_key.replace('frc','')))?.name"></span>
                                             </div>
-                                            <!-- Ranking Stats -->
-                                            <template x-if="rank.matches_played !== undefined">
-                                                <div class="flex items-center gap-4">
-                                                    <div class="flex flex-col items-end">
-                                                        <span
-                                                            class="text-[8px] text-slate-600 font-bold uppercase">Record</span>
-                                                        <span class="text-[9px] text-slate-300 font-black"
-                                                            x-text="rank.record ? `${rank.record.wins}-${rank.record.losses}-${rank.record.ties}` : 'N/A'"></span>
-                                                    </div>
-                                                    <div class="flex flex-col items-end">
-                                                        <span
-                                                            class="text-[8px] text-slate-600 font-bold uppercase">Played</span>
-                                                        <span class="text-[9px] text-slate-300 font-black"
-                                                            x-text="rank.matches_played"></span>
-                                                    </div>
-                                                </div>
-                                            </template>
+                                            <div class="col-span-2 text-right">
+                                                <span class="text-[9px] text-slate-400 font-bold"
+                                                    x-text="rank.record ? `${rank.record.wins}-${rank.record.losses}-${rank.record.ties}` : '0-0-0'"></span>
+                                            </div>
+                                            <div class="col-span-2 text-right font-black text-white text-[10px]"
+                                                x-text="getRankData(rank, 'Ranking Score', event.key)"></div>
+                                            <div class="col-span-2 text-right font-black text-white text-[10px]"
+                                                x-text="getRankData(rank, 'Avg Match', event.key)"></div>
+                                            <div class="col-span-2 text-right font-black text-white text-[10px]"
+                                                x-text="getRankData(rank, 'Avg Auto', event.key)"></div>
                                         </div>
                                         <!-- Expand Team Detail -->
                                         <div x-show="expandedTeams.includes(event.key + '_' + parseInt(rank.team_key.replace('frc','')))"
-                                            class="p-4 bg-slate-900/60 border-t border-slate-800 space-y-6">
-                                            <!-- Pit Scouts For THIS Regional -->
-                                            <div class="space-y-3">
-                                                <h4
-                                                    class="text-[9px] font-black uppercase tracking-[0.2em] text-orange-500 border-l-2 border-orange-500 pl-3">
-                                                    Pit Scouts (This Event)</h4>
-                                                <div class="space-y-2">
+                                            x-collapse class="p-4 bg-slate-900/60 border-t border-slate-800 space-y-6">
+                                            <!-- Pit Scouts For SEASON -->
+                                            <div class="space-y-4">
+                                                <div
+                                                    class="flex items-center justify-between border-b border-orange-500/20 pb-2">
+                                                    <h4
+                                                        class="text-[9px] font-black uppercase tracking-[0.2em] text-orange-500">
+                                                        Pit Reports (Season-Wide)</h4>
+                                                    <span class="text-[8px] text-slate-500 font-bold"
+                                                        x-text="(pitReports[parseInt(rank.team_key.replace('frc',''))] || []).length + ' reports found'"></span>
+                                                </div>
+                                                <div class="space-y-3">
                                                     <template
-                                                        x-for="report in (pitReports[parseInt(rank.team_key.replace('frc',''))] || []).filter(r => r.regional === event.key)">
-                                                        <div
-                                                            class="bg-slate-800/40 p-3 rounded-lg border border-slate-700/50">
-                                                            <div class="flex justify-between items-center mb-2">
-                                                                <span class="text-[10px] font-black text-white"
-                                                                    x-text="'Scouter Team #' + report.meta.scouterTeam"></span>
+                                                        x-for="report in (pitReports[parseInt(rank.team_key.replace('frc',''))] || [])"
+                                                        :key="report.id">
+                                                        <div class="bg-slate-800/40 p-3 rounded-lg border border-slate-700/50 hover:border-orange-500/30 transition-all cursor-pointer"
+                                                            @click="togglePitReport(report.id)">
+                                                            <div class="flex justify-between items-center mb-1">
+                                                                <div class="flex items-center gap-2">
+                                                                    <span class="text-[10px] font-black text-white"
+                                                                        x-text="'Scouter Team #' + report.meta.scouterTeam"></span>
+                                                                    <span
+                                                                        class="text-[8px] bg-white/5 px-1.5 py-0.5 rounded text-orange-400 font-black uppercase tracking-tighter"
+                                                                        x-text="report.regional"></span>
+                                                                </div>
                                                                 <span class="text-[9px] text-slate-500"
                                                                     x-text="formatDate(report.createdAt)"></span>
                                                             </div>
-                                                            <div class="grid grid-cols-2 gap-2 text-[9px]">
+                                                            <div x-show="expandedPitReports.includes(report.id)"
+                                                                x-collapse
+                                                                class="mt-3 grid grid-cols-2 gap-x-6 gap-y-3 text-[9px] border-t border-slate-700/30 pt-3">
                                                                 <div class="flex justify-between text-slate-400">
                                                                     <span>Drive:</span> <span
                                                                         class="text-white font-bold"
-                                                                        x-text="report.data?.driveBase"></span></div>
+                                                                        x-text="report.data?.driveBase"></span>
+                                                                </div>
                                                                 <div class="flex justify-between text-slate-400">
                                                                     <span>Intake:</span> <span
                                                                         class="text-white font-bold"
-                                                                        x-text="report.data?.intake"></span></div>
+                                                                        x-text="report.data?.intake"></span>
+                                                                </div>
+                                                                <div class="flex justify-between text-slate-400">
+                                                                    <span>Shooter:</span> <span
+                                                                        class="text-white font-bold"
+                                                                        x-text="report.data?.shooter"></span>
+                                                                </div>
+                                                                <div class="flex justify-between text-slate-400">
+                                                                    <span>Capacity:</span> <span
+                                                                        class="text-white font-bold"
+                                                                        x-text="report.data?.ballCapacity"></span>
+                                                                </div>
+                                                                <div class="col-span-2 flex flex-col gap-1 mt-1">
+                                                                    <span
+                                                                        class="text-slate-500 uppercase tracking-widest text-[8px]">Comments:</span>
+                                                                    <p class="text-slate-300 italic leading-tight"
+                                                                        x-text="report.data?.generalComments || 'No comments'">
+                                                                    </p>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </template>
                                                     <template
-                                                        x-if="!(pitReports[parseInt(rank.team_key.replace('frc',''))] || []).some(r => r.regional === event.key)">
-                                                        <p class="text-[10px] text-slate-600 italic">No reports for this
-                                                            event.</p>
+                                                        x-if="!(pitReports[parseInt(rank.team_key.replace('frc',''))] || []).length">
+                                                        <div
+                                                            class="py-12 flex flex-col items-center justify-center opacity-40">
+                                                            <svg class="h-8 w-8 text-slate-600 mb-2" fill="none"
+                                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                    d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a2 2 0 00-1.96 1.414l-.722 2.164a2 2 0 00.177 1.647l1.003 1.505a2 2 0 001.621.824h2.246a2 2 0 001.621-.824l1.003-1.505a2 2 0 00.177-1.647l-.722-2.164a2 2 0 00-1.022-1.071l-2.387-.477z">
+                                                                </path>
+                                                            </svg>
+                                                            <p class="text-[10px] text-slate-600 italic">Zero scouting
+                                                                reports available for this season.</p>
+                                                        </div>
                                                     </template>
                                                 </div>
                                             </div>
 
-                                            <!-- Original Team Explorer Details (Simplified) -->
-                                            <div class="space-y-3 opacity-60">
+                                            <!-- Original Team Explorer Details -->
+                                            <div class="space-y-3 pt-4 border-t border-slate-800">
                                                 <h4
-                                                    class="text-[9px] font-black uppercase tracking-[0.2em] text-slate-500">
-                                                    Official Honors & History</h4>
+                                                    class="text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 border-l-2 border-slate-700 pl-3">
+                                                    Official Honors</h4>
                                                 <div class="flex flex-wrap gap-2">
                                                     <template
                                                         x-for="award in (regionalData[event.key].teams.find(t => t.teamNumber === parseInt(rank.team_key.replace('frc','')))?.awards || [])">
-                                                        <span
-                                                            class="text-[8px] bg-white/5 px-2 py-1 rounded text-slate-400"
-                                                            x-text="award.name"></span>
+                                                        <div
+                                                            class="flex flex-col bg-white/5 px-2 py-1.5 rounded border border-white/5">
+                                                            <span class="text-[9px] font-black text-orange-400"
+                                                                x-text="award.name"></span>
+                                                            <span class="text-[8px] text-slate-500 font-bold"
+                                                                x-text="award.event_key + ' (' + award.year + ')'"></span>
+                                                        </div>
+                                                    </template>
+                                                    <template
+                                                        x-if="!(regionalData[event.key].teams.find(t => t.teamNumber === parseInt(rank.team_key.replace('frc','')))?.awards?.length)">
+                                                        <span class="text-[9px] text-slate-700 italic">No official
+                                                            honors on file.</span>
                                                     </template>
                                                 </div>
                                             </div>
@@ -251,19 +350,24 @@
 
                             <!-- Prizes Section -->
                             <div x-show="tab === 'prizes'" class="p-3 space-y-3">
-                                <template x-for="award in regionalData[event.key].awards">
+                                <template x-for="award in getFilteredAwards(event.key)">
                                     <div
-                                        class="flex items-center justify-between p-3 bg-slate-800/20 border border-slate-700/30 rounded-lg">
-                                        <div class="flex flex-col">
-                                            <span class="text-[11px] font-black text-white leading-tight"
+                                        class="flex items-center justify-between p-3 bg-slate-800/20 border border-slate-700/30 rounded-lg group hover:border-orange-500/20 transition-all">
+                                        <div class="flex flex-col flex-1 mr-4">
+                                            <span class="text-[11px] font-black text-white leading-tight mb-1"
                                                 x-text="award.name"></span>
+                                            <span
+                                                class="text-[8px] text-orange-500 font-black uppercase tracking-widest"
+                                                x-text="award.event_key + ' | ' + award.year + ' SEASON'"></span>
                                         </div>
-                                        <div class="flex flex-col items-end">
+                                        <div class="flex flex-col items-end shrink-0">
                                             <template x-for="recipient in award.recipient_list">
-                                                <div class="flex items-center gap-2">
+                                                <div @click="location.href='teams.html?team=' + recipient.team_key?.replace('frc','')"
+                                                    class="flex items-center gap-2 cursor-pointer hover:underline">
                                                     <span class="text-[10px] font-black text-orange-500"
-                                                        x-text="'#' + (recipient.team_key?.replace('frc','') || 'Individual')"></span>
-                                                    <span class="text-[9px] text-slate-500 font-bold"
+                                                        x-text="'#' + (recipient.team_key?.replace('frc','') || 'Indiv.')"></span>
+                                                    <span
+                                                        class="text-[9px] text-slate-500 font-bold max-w-[100px] truncate"
                                                         x-text="recipient.awardee"></span>
                                                 </div>
                                             </template>
